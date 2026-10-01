@@ -32,7 +32,7 @@ You will be prompted to sign up for a Posit Cloud account. Please do so.
 
 ![](images/workshop_save.png)
 
-6\) To run a "chunk" of code you can press the green button at the top right corner of each chunk. You can check that the R packages we need are installed properly by pressing the green button on the chunk that start with "library(dplyr)". After this, you're all set!
+6\) To run a "chunk" of code you can press the green button at the top right corner of each chunk. You can check that the R packages we need are installed properly by pressing the green button on the chunk that starts with "library(dplyr)". After this, you're all set!
 
 ![](images/clipboard-3123991064.png)
 
