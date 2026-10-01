@@ -14,6 +14,8 @@ Check out the pre-class instructions tab for a brief walkthrough on how to prepa
 
 # Itinerary
 
+Location: RI-MUHC, Conference Room E S1.1129
+
 [Morning session 1: Intro to sequencing and bioinformatics for microbiome studies]{.underline}
 
 \
