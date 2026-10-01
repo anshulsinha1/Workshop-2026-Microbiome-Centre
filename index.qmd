@@ -1,40 +1,46 @@
 ---
 title: "McGill Centre for Microbiome Research 2026 Workshop"
-
-subtitle:                "                An Intro to Microbiome Data Analysis by Anshul Sinha PhD"
-
-about:
-  template: jolla
-  image: logo.png
-  image-width: 18em
-  image-shape: rectangle
 ---
+
+![](images/logo.png)
 
 # General Overview
 
 Welcome to the 2026 Microbiome Centre Symposium Workshop!
 
-The goal of this workshop is to provide a useful overview of best practices for analyzing microbiome data + a hands-on tutorial on how to visualize and interpret a real full-length 16S sequencing dataset.
+The goal of this workshop is to provide an overview of best practices for analyzing microbiome data + a hands-on tutorial on how to visualize and interpret a real full-length 16S sequencing dataset.
 
-Check out the resources tab for links on how install R/Rstudio and some other helpful microbiome data analysis resources.
+Check out the pre-class instructions tab for a brief walkthrough on how to prepare for the workshop.
 
 # Itinerary
 
-[Morning session 1: Intro to sequencing for microbiome studies]{.underline}\
-*8:00 AM-10:00 AM*\
-Session 1: Overview of workshop, introductions, and intro to microbiome-based sequencing approaches, bioinformatics best practices and microbial ecology methods.
+[Morning session 1: Intro to sequencing and bioinformatics for microbiome studies]{.underline}
 
 \
-[Break]{.underline}\
-*10:00-10:30 AM*
+8:00 AM-10:00 AM
 
 \
-[Morning session 2: 10:30 AM-12:15 PM: Processing microbiome data]{.underline}\
-Session 2: Intro to R, interpretting microbiome feature tables and phyloseq basics
+Session 1: Overview of workshop, intro to microbiome-based sequencing approaches (16S vs. metagenomics, short vs. long read), bioinformatics best practices and microbial ecology methods
+
+[Break]{.underline}
+
+10:00-10:30 AM
+
+[Morning session 2: Processing microbiome data in R]{.underline}
+
+10:30 AM-12:15 PM
 
 \
-[Lunch Break]{.underline}\
-12:30 PM - 1:00 PM\
+Session 2: Introduction to R programming for microbial ecology datasets, interpreting microbiome feature tables, and characterization of the full-length 16S sequencing dataset we will be analyzing
+
 \
-[Afternoon session: 1:00 PM-3:00 PM]{.underline}\
-Session 2: How to work with phyloseq objects to visualize microbiome data, generate bar plots, ordination plots and measure alpha and beta-diversity
+[Lunch Break]{.underline}
+
+12:15 PM - 1:00 PM
+
+[Afternoon session: Visualizing and interpreting microbiome data in R]{.underline}
+
+1:00 PM-3:00 PM
+
+\
+Session 3: How to work with phyloseq objects to visualize microbiome data, generate bar plots, ordination plots and measure alpha and beta-diversity

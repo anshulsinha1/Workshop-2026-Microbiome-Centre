@@ -1,0 +1,316 @@
+---
+title: "R_workshop_microbiome_centre_2026"
+output: html_document
+date: "2026-09-29"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+#packages we'll need to install 
+library(dplyr) #manipulating dataframes etc.
+library(phyloseq) #integrates taxa, abundance, sample data into integrated object for analyses
+library(microbiome) #performs functions on phyloseq object to transform/visualize
+library(microViz)  #helps perform visualizations on phyloseq objects 
+library(vegan) #ecological distance calculations/stats
+library(stringr)
+```
+
+## Importing Emu Table to R
+
+We can
+
+```{r}
+
+emu_input_workshop <- read.table("/Users/anshulsinha/Desktop/microbiome_center/centre-symposium-2026/R_material/emu-combined_workshop_counts.tsv", header = TRUE, sep = "\t")
+
+
+
+#for the feature table, we don't need all the taxonomy info since we'll have that saved in taxonomy table, so let's remove everything but the sample names and taxid
+
+feature_table_workshop <- emu_input_workshop[, !names(emu_input_workshop) %in% c("species", "genus", "family", "order", "class", "phylum", "superkingdom")]
+
+
+#for future merging with the metadata table, remove everything before the first underscore and everything after the last 
+
+names(feature_table_workshop)[-1] <- sub(
+  "_[^_]*$", "",
+  sub("^[^_]*_", "", names(feature_table_workshop)[-1])
+)
+
+
+#uneven naming: remove everything after the 6 digit # 
+
+names(feature_table_workshop) <- sub(
+  "(?<=_[0-9]{6})_.*$",
+  "",
+  names(feature_table_workshop),
+  perl = TRUE
+)
+
+#461 total columns 
+anyDuplicated(names(feature_table_workshop)) 
+dup_names <- names(feature_table_workshop)
+sum(duplicated(dup_names)) #3 duplicated
+counts <- table(dup_names)
+counts[counts > 1]
+
+# 3 samples are duplicated, remove these - they also seem to have identical metadata anyways 
+
+feature_table_workshop <- feature_table_workshop[,!duplicated(names(feature_table_workshop))
+]
+
+anyDuplicated(names(feature_table_workshop)) 
+dup_names <- names(feature_table_workshop)
+sum(duplicated(dup_names))
+#458 columns now 
+
+
+#if abundance was blank, it's stored as NA, this can be problematic for phyloseq, so we'll change any instances of NA to 0
+
+
+
+#since these are estimated counts, they are non-integers. Again this can be problematic downstream, so we'll round our estimated counts 
+feature_table_workshop[] <- lapply(feature_table_workshop, function(x) if(is.numeric(x)) round(x) else x)
+
+feature_table_workshop[is.na(feature_table_workshop)] <- 0
+
+
+
+#Rather than it being its own column, for formatting later, we'll need to make the tax_id column rownames
+rownames(feature_table_workshop) <- feature_table_workshop$tax_id
+feature_table_workshop$tax_id <- NULL
+colnames(feature_table_workshop)
+
+
+
+
+
+# Remove the row where rowname is "unassigned" because we won't be dealing with this
+feature_table_workshop <- feature_table_workshop[!(rownames(feature_table_workshop) == "unassigned"), ]
+length(unique(rownames(feature_table_workshop)))
+length(unique(colnames(feature_table_workshop)))
+#457 sample names 
+#now we can convert this to a matrix for input into the ps object 
+
+feature_table_workshop_mat <- as.matrix(feature_table_workshop)
+
+```
+
+We will now read in the taxonomy table...
+
+```{r}
+
+
+#We'll start with our Emu output, but here we're only concerned with the taxonomy 
+
+library(dplyr)
+tax_table1.workshop <-  emu_input_workshop %>% 
+  select(tax_id, species, genus, family, order, class, phylum, superkingdom)
+
+
+# Replace blank strings with NA in all columns
+tax_table1.workshop <- tax_table1.workshop %>%
+  mutate_all(~ na_if(., ""))
+
+
+#remove unassigned row 
+tax_table1.workshop <- tax_table1.workshop[!(rownames(tax_table1.workshop) == "unassigned"), ]
+
+#similar to above, we'll need to make the tax_id column the rownames 
+rownames(tax_table1.workshop) <- tax_table1.workshop$tax_id
+tax_table1.workshop$tax_id <- NULL
+
+#convert to matrix 
+tax_table1.workshop.mat <- as.matrix(tax_table1.workshop)
+
+#reverse order of columns, since the format of phyloseq taxonomy goes from low res -> high res
+tax_table.final.workshop <- tax_table1.workshop.mat[, rev(seq_len(ncol(tax_table1.workshop.mat)))]
+
+as.data.frame(tax_table.final.workshop)
+
+
+length(unique(rownames(tax_table.final.workshop)))
+as.data.frame(tax_table.final.workshop["1134687", , drop = FALSE])
+
+```
+
+And now the Metadata
+
+```{r}
+#read in the metadata file
+
+metadata_1 <- read.csv("/Users/anshulsinha/Desktop/microbiome_center/centre-symposium-2026/R_material/metadata_pt1.csv")
+
+metadata_2 <- read.csv("/Users/anshulsinha/Desktop/microbiome_center/centre-symposium-2026/R_material/metadata_pt2.csv")
+
+
+
+
+#Dog_gut_microbiome_SRTP_0_AF1_230327_Ilka1 samples look like this: wil need to cut 
+
+metadata_1 <- metadata_1[
+  !is.na(metadata_1$sample_title) &
+    nzchar(trimws(metadata_1$sample_title)),
+  ,
+  drop = FALSE
+]
+
+
+metadata_1$sample_title <- sub(
+  "^Dog_gut_microbiome_",
+  "",
+  metadata_1$sample_title
+)
+
+
+
+metadata_2 <- metadata_2[
+  !is.na(metadata_2$sample_title) &
+    nzchar(trimws(metadata_2$sample_title)),
+  ,
+  drop = FALSE
+]
+
+
+metadata_2$sample_title <- sub(
+  "^Dog_gut_microbiome_",
+  "",
+  metadata_2$sample_title
+)
+
+
+# Seems like some of the sample2 samples are in the sample1 - I should remove these 
+metadata_1$sample_title[
+  metadata_1$sample_title %in% metadata_2$sample_title
+]
+
+#drop these samples from metadata1
+
+metadata_1 <- metadata_1[
+  !(metadata_1$sample_title %in% metadata_2$sample_title),
+  ,
+  drop = FALSE
+]
+
+metadata_1
+metadata_2
+#439 rows in metadata1 
+#17 in metadata2
+
+#456 after merge
+metadata_all <- dplyr::bind_rows(metadata_1, metadata_2)
+
+
+#uneven naming: remove everything after the 6 digit # 
+
+metadata_all$sample_title <- sub(
+  "(?<=_[0-9]{6})_.*$",
+  "",
+  metadata_all$sample_title,
+  perl = TRUE
+)
+
+sum(metadata_all$sample_title %in% colnames(feature_table_workshop))
+#441 of 456 are in the feature table workshop names 
+
+
+
+# Titles that match
+metadata_all$sample_title[
+  metadata_all$sample_title %in% colnames(feature_table_workshop)
+]
+
+# Titles that do not match
+metadata_all$sample_title[
+  !metadata_all$sample_title %in% colnames(feature_table_workshop)
+  
+]
+
+#DMD_0_AF1_230407  PP_K_PM1_230726  RR_F_PF1_240414 
+#remove any duplicate sanoke names 
+metadata_all <- metadata_all[
+  !duplicated(metadata_all$sample_title),
+  ,
+  drop = FALSE
+]
+#454 sample names
+
+# Set the sample column as row names
+rownames(metadata_all) <- metadata_all$sample_title
+
+table(metadata_all$host_subject_id)
+
+length(unique(metadata_all$host_subject_id))
+
+class(metadata_all)
+
+# Set the sample column as row names
+
+
+# Titles that match
+metadata_all$sample_title[
+  metadata_all$sample_title %in% colnames(feature_table_workshop)
+]
+
+metadata_all$sample_title[
+  !metadata_all$sample_title %in% colnames(feature_table_workshop)
+  
+]
+
+sum(!metadata_all$sample_title %in% colnames(feature_table_workshop)) #15 found in the feature table but not the metadata
+feature_ids <- colnames(feature_table_workshop)[-1]
+length(feature_ids[!feature_ids %in% metadata_all$sample_title]) #18 found in the metadata but not the feature table
+
+
+length(intersect(metadata_all$sample_title, colnames(feature_table_workshop))) #439
+
+
+metadata_all$sample_title[
+  !metadata_all$sample_title %in% colnames(feature_table_workshop)
+  
+]
+
+
+
+
+
+```
+
+```{r}
+#Phyloseq 
+library("phyloseq")
+OTU.dogs = otu_table(feature_table_workshop_mat, taxa_are_rows = TRUE)
+TAX.dogs = tax_table(tax_table.final.workshop)
+META.dogs = sample_data(metadata_all)
+phyloseq.dogs = phyloseq(OTU.dogs, TAX.dogs, META.dogs)
+
+
+psmelt(phyloseq.dogs)
+sample_names(OTU.dogs)
+sample_names(META.dogs)
+
+
+
+#save a phyloseq object 
+
+saveRDS(phyloseq.dogs, file = "/Users/anshulsinha/Desktop/microbiome_center/centre-symposium-2026/R_material/dogs_phyloseq.rds")
+
+
+```
+
+```{r}
+import_ps <- readRDS("/Users/anshulsinha/Desktop/microbiome_center/centre-symposium-2026/R_material/dogs_phyloseq.rds")
+
+fixed_physeq <- tax_fix(import_ps)
+fixed_physeq <- fixed_physeq %>% 
+  tax_fix(unknowns = c("uncultured"))
+
+comp_barplot(fixed_physeq, tax_level = "phylum") 
+
+comp_barplot(fixed_physeq, tax_level = "species") 
+
+?comp_barplot
+```

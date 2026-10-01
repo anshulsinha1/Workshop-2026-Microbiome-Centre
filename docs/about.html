@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>About – Workshop-2026-Microbiome-Centre</title>
+<title>Pre-Class Instructions – Workshop-2026-Microbiome-Centre</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -136,7 +136,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   </li>  
   <li class="nav-item">
     <a class="nav-link active" href="./about.html" aria-current="page"> 
-<span class="menu-text">About</span></a>
+<span class="menu-text">Pre-Class Instructions</span></a>
   </li>  
 </ul>
           </div> <!-- /navcollapse -->
@@ -149,15 +149,23 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
 <!-- margin-sidebar -->
-    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
-        
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#overview" id="toc-overview" class="nav-link active" data-scroll-target="#overview">Overview</a></li>
+  <li><a href="#option-1-for-those-with-limited-or-no-r-experience" id="toc-option-1-for-those-with-limited-or-no-r-experience" class="nav-link" data-scroll-target="#option-1-for-those-with-limited-or-no-r-experience">Option #1: For those with limited or no R experience</a></li>
+  <li><a href="#option-2-for-those-with-r-experience" id="toc-option-2-for-those-with-r-experience" class="nav-link" data-scroll-target="#option-2-for-those-with-r-experience">Option #2: For those with R experience</a></li>
+  </ul>
+</nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">About</h1>
+<h1 class="title">Pre-Class Instructions</h1>
 </div>
 
 
@@ -174,15 +182,93 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<p>About this site</p>
+<section id="overview" class="level1">
+<h1>Overview</h1>
+<p>The workshop will focus on the analysis and visualization of full-length 16S sequencing data using various R packages. We will work through the code together to ensure we are all on the same page, and stop frequently to discuss our progress and compare what we’ve run.</p>
+<p>To help the hands-on session run smoothly, please complete one of the two preparation options before the workshop. Choose the option that best matches your experience with R.</p>
+</section>
+<section id="option-1-for-those-with-limited-or-no-r-experience" class="level1">
+<h1>Option #1: For those with limited or no R experience</h1>
+<p>This workshop will focus more on the steps that we perform, rather than the R syntax itself, so don’t sweat it if you don’t have experience coding in R. Still, it would be beneficial to watch a quick intro video on R so you get a feel for how we write basic code. Short version: https://www.youtube.com/watch?v=FY8BISK5DpM . Longer version: <a href="https://www.youtube.com/watch?v=yZ0bV2Afkjc&amp;t=1636s">https://www.youtube.com/watch?v=yZ0bV2Afkjc</a></p>
+<p>To avoid having you go through the steps of installing R (programming language), R studio (interface where we write the code), and the required packages, we’ve set up a cloud-hosted version of R studio, with everything pre-installed. From here, you can work easily with the code that we will write during the workshop. Here are the simple instructions to set this up:</p>
+<p>1) Click on the link to our Posit Cloud shared space: <a href="https://posit.cloud/spaces/826598/join?access_code=SV4W1-YcKgt9SbQrSZSbZc8bdItYSUTBRIB8_IDb" class="uri">https://posit.cloud/spaces/826598/join?access_code=SV4W1-YcKgt9SbQrSZSbZc8bdItYSUTBRIB8_IDb</a></p>
+<p>You will be prompted to sign up for a Posit Cloud account. Please do so.</p>
+<p>2) Once you confirm your email and sign up confirm that you would like to join the shared space</p>
+<p>3) You should be directed to webpage that hosts the shared space for the workshop. Select “Content” on the tab at the top of the webpage. You should see a file named “workshop_tutorial”. Please open this (it may take up to a minute).</p>
+<p><img src="images/website_content.png" class="img-fluid"></p>
+<p>4) Once in the file is opened, open the markdown file in the bottom right corner in the “Files” panel</p>
+<p><img src="images/workshop_markdown.png" class="img-fluid"></p>
+<p>5) This is the markdown file we will be working with the for the majority of the workshop. You can save a permanent version of this by clicking the “Save a permanent copy” button in the top right corner.</p>
+<p><img src="images/workshop_save.png" class="img-fluid"></p>
+<p>6) To run a “chunk” of code you can press the green button at the top right corner of each chunk. You can check that the R packages we need are installed properly by pressing the green button on the chunk that start with “library(dplyr)”. After this, you’re all set!</p>
+<p><img src="images/clipboard-3123991064.png" class="img-fluid"></p>
+</section>
+<section id="option-2-for-those-with-r-experience" class="level1">
+<h1>Option #2: For those with R experience</h1>
+<p>For those that have experience with R and R studio, you will need to install several packages before the workshop. We will be mostly be using the “phyloseq” package and several wrappers of this. You will also need to download the phyloseq object locally. Note that if you have difficulties with the steps below, I recommend following the instructions for option1 instead.</p>
+<p>1) Download the phyloseq object that we will be working with here:</p>
+<p><a href="data/dogs_phyloseq.rds">Download the phyloseq object</a></p>
+<p>2) In R studio, read in the phyloseq object using the following:</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="dv">1</span> <span class="sc">+</span> <span class="dv">1</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>[1] 2</code></pre>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">readRDS</span>(<span class="st">"yourfilepath/dogs_phyloseq.rds"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
+<p>3) Install the following packages in R</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="do">###Install phyloseq###</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="sc">!</span><span class="fu">require</span>(<span class="st">"BiocManager"</span>, <span class="at">quietly =</span> <span class="cn">TRUE</span>))</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">install.packages</span>(<span class="st">"BiocManager"</span>)</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>BiocManager<span class="sc">::</span><span class="fu">install</span>(<span class="st">"phyloseq"</span>)</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a><span class="do">###Install ape###</span></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">"ape"</span>)</span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a><span class="do">###Install qiime2R###</span></span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="sc">!</span><span class="fu">requireNamespace</span>(<span class="st">"devtools"</span>, <span class="at">quietly =</span> <span class="cn">TRUE</span>)){<span class="fu">install.packages</span>(<span class="st">"devtools"</span>)}</span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>devtools<span class="sc">::</span><span class="fu">install_github</span>(<span class="st">"jbisanz/qiime2R"</span>)</span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a><span class="do">###Install Microviz###</span></span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="sc">!</span><span class="fu">requireNamespace</span>(<span class="st">"BiocManager"</span>, <span class="at">quietly =</span> <span class="cn">TRUE</span>)) <span class="fu">install.packages</span>(<span class="st">"BiocManager"</span>)</span>
+<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a>BiocManager<span class="sc">::</span><span class="fu">install</span>(<span class="fu">c</span>(<span class="st">"phyloseq"</span>, <span class="st">"microbiome"</span>, <span class="st">"ComplexHeatmap"</span>), <span class="at">update =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(</span>
+<span id="cb2-26"><a href="#cb2-26" aria-hidden="true" tabindex="-1"></a>  <span class="st">"microViz"</span>,</span>
+<span id="cb2-27"><a href="#cb2-27" aria-hidden="true" tabindex="-1"></a>  <span class="at">repos =</span> <span class="fu">c</span>(<span class="at">davidbarnett =</span> <span class="st">"https://david-barnett.r-universe.dev"</span>, <span class="fu">getOption</span>(<span class="st">"repos"</span>))</span>
+<span id="cb2-28"><a href="#cb2-28" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb2-29"><a href="#cb2-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-30"><a href="#cb2-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-31"><a href="#cb2-31" aria-hidden="true" tabindex="-1"></a><span class="do">###Install Microbiome###</span></span>
+<span id="cb2-32"><a href="#cb2-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-33"><a href="#cb2-33" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="sc">!</span><span class="fu">require</span>(<span class="st">"BiocManager"</span>, <span class="at">quietly =</span> <span class="cn">TRUE</span>))</span>
+<span id="cb2-34"><a href="#cb2-34" aria-hidden="true" tabindex="-1"></a>    <span class="fu">install.packages</span>(<span class="st">"BiocManager"</span>)</span>
+<span id="cb2-35"><a href="#cb2-35" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-36"><a href="#cb2-36" aria-hidden="true" tabindex="-1"></a>BiocManager<span class="sc">::</span><span class="fu">install</span>(<span class="st">"microbiome"</span>)</span>
+<span id="cb2-37"><a href="#cb2-37" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-38"><a href="#cb2-38" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-39"><a href="#cb2-39" aria-hidden="true" tabindex="-1"></a><span class="do">###Install vegan###</span></span>
+<span id="cb2-40"><a href="#cb2-40" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">"vegan"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>4) Confirm installation</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(phyloseq)</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(qiime2R)</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(microViz)</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ape)</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(microbiome)</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(vegan)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 
 
+</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
