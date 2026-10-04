@@ -9,18 +9,131 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 ```{r}
-#packages we'll need to install 
+#R Concepts Tutorial - Part 1 
+
+#Focus on this tutorial will not be to necessarily understand the basics of R programming, but more to give you the tools to understand the workflow 
+
+# You can copy and paste the code found here into your own files and run the code yourself 
+
+
+# 1) By putting a hastag in front of text you can put a "comment" 
+
+# R will not interpret this as code
+
+# We can use this as a way to annotate our code with helpful notes 
+
+
+
+
+# 2) We will be using a R markdown file to write our code
+
+# It allows us organize our code by keeping sections in different "chunks"
+
+
+# You can create a new chunk by clicking "Insert a new code chunk" in the top bar (button with a green C with a plus)
+
+
+
+
+
+```
+
+```{r}
+# R Concepts - Part 2
+
+
+#In R, you can save information in an object called a variable. This lets you reuse a value, data frame, or result later without having to type it again.
+
+#Use `<-` to assign something to a variable:
+
+
+# Save the number 5 in a variable named "number_of_samples"
+
+# You can run this line of code by higlighting the line and selecting "run selected lines" on the "Run" button on the top bar
+
+#Alternatively, you can run all lines in a chunk by selecting "Run Current Chunk" or By pressing the Green button at the top right of the chunk
+
+
+number_of_samples <- 5
+
+
+#you can view the number_of_samples variable by viewing it in the "environment" tab or by running just the variable 
+number_of_samples
+
+
+```
+
+```{r}
+# R concepts Part 3 
+
+# R Concepts Tutorial - Part 3: Functions
+
+# A function is a reusable command that performs a specific task.
+
+# Functions usually have:
+# 1. A function name
+# 2. Parentheses ()
+# 3. An input inside the parentheses, called an "argument"
+
+# For example, the c() function combines several values into one vector:
+
+sample_ids <- c("Sample_01", "Sample_02", "Sample_03")
+
+
+# Type the variable name and run the line to view its contents:
+
+sample_ids
+
+
+
+# The length() function counts the number of values in an object:
+
+length(sample_ids)
+
+
+```
+
+```{r}
+
+# R concepts Part 4
+
+#Certain functions that we may need are not automatically loaded in R 
+#These functions are found within R "packages" that contain a set of functions 
+#To load these packages, we can use the "library" function 
+
+#For our workshop  we will need the following: 
+
 library(dplyr) #manipulating dataframes etc.
 library(phyloseq) #integrates taxa, abundance, sample data into integrated object for analyses
 library(microbiome) #performs functions on phyloseq object to transform/visualize
 library(microViz)  #helps perform visualizations on phyloseq objects 
 library(vegan) #ecological distance calculations/stats
-library(stringr)
+library(stringr) #working with character strings
+
+
+```
+
+```{r}
+# R concepts Part 5 
+
+# We can load our phyloseq object and save it as the "phyloseq.dogs" variable by using the readRDS function and using the pathname where the object is found as an argument
+
+#Replace the pathfile to where your file is located 
+phyloseq.dogs <-  readRDS("/Users/anshulsinha/Desktop/microbiome_center/centre-symposium-2026/R_material/dogs_phyloseq.rds")
+
+#If using posit.cloud, run the following: 
+
+#phyloseq.dogs <- readRDS("/cloud/project/R_material/dogs_phyloseq.rds")
+
+```
+
+```{as.data.frame(tax_table.final.workshop)}
+
+
+Modify Chunk Options
 ```
 
 ## Importing Emu Table to R
-
-We can
 
 ```{r}
 
@@ -134,6 +247,9 @@ as.data.frame(tax_table.final.workshop)
 
 length(unique(rownames(tax_table.final.workshop)))
 as.data.frame(tax_table.final.workshop["1134687", , drop = FALSE])
+
+library("phyloseq"); packageVersion("phyloseq")
+
 
 ```
 
@@ -301,6 +417,47 @@ saveRDS(phyloseq.dogs, file = "/Users/anshulsinha/Desktop/microbiome_center/cent
 
 ```
 
+Now that we have our phyloseq object, let's survey what we have here
+
+```{r}
+#you can run the phyloseq object it's chunk to return some basic characteristics of the dataset 
+
+
+phyloseq.dogs
+#How many unique species are in the dataset?
+#How many samples?
+#How many metadata categories do we have? 
+
+
+```
+
+Let's look at each component of the phyloseq object
+
+```{r}
+#1) The OTU_table function can acess the "feature table"
+
+ps_otu_df <- as.data.frame(otu_table(phyloseq.dogs)) #
+ps_otu_df
+
+#Any immediate observations here? 
+
+
+```
+
+```{r}
+#2) The sample_data function allows us to access the "metadata"
+sample_data(phyloseq.dogs)
+
+#Any 
+
+
+
+```
+
+```{r}
+sample_sums(phyloseq.dogs)
+```
+
 ```{r}
 import_ps <- readRDS("/Users/anshulsinha/Desktop/microbiome_center/centre-symposium-2026/R_material/dogs_phyloseq.rds")
 
@@ -308,9 +465,33 @@ fixed_physeq <- tax_fix(import_ps)
 fixed_physeq <- fixed_physeq %>% 
   tax_fix(unknowns = c("uncultured"))
 
-comp_barplot(fixed_physeq, tax_level = "phylum") 
+comp_barplot(fixed_physeq, tax_level = "phylum", facet_by = "host_life_stage") 
 
 comp_barplot(fixed_physeq, tax_level = "species") 
 
+comp_barplot(fixed_physeq, tax_level = "species", group_by = "host_life_stage") 
+
+
+fixed_physeq %>%
+phyloseq::merge_samples(group = "host_life_stage") %>%
+  comp_barplot(tax_level = "genus", n_taxa = 12, bar_width = 0.8)
+
+sample_data(fixed_physeq)
+
 ?comp_barplot
+```
+
+```{r}
+fixed_physeq_adult <- subset_samples(fixed_physeq, host_life_stage == "adult")
+
+escherichia_df <- fixed_physeq_adult %>%
+  psmelt() %>%
+  filter(genus == "Escherichia") %>%
+  arrange(desc(Abundance))
+
+escherichia_df
+
+
+sample_data(fixed_physeq_adult)
+
 ```
