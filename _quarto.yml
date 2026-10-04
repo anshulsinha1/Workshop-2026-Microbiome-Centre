@@ -8,8 +8,8 @@ website:
     left:
       - href: index.qmd
         text: Home
-      - about.qmd
-      - tutorial.qmd
+      - href: about.qmd
+        text: Pre-class instructions
       - href: tutorial.qmd      # <- new page
         text: Tutorial          # <- link text
 

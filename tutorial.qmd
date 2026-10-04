@@ -8,6 +8,8 @@ The necessary code for the workshop will be hosted here, alongside questions and
 
 You can copy and paste the code here into your file
 
+You can answer questions as comments in the R chunks
+
 # Section 1: R basics Tutorial
 
 ```{r}
@@ -83,7 +85,7 @@ number_of_samples
 # 2. Parentheses ()
 # 3. An input inside the parentheses, called an "argument"
 
-# For example, the c() function combines several values into one vector:
+# For example, the c() function combines several values into one vector (ordered collection of values):
 
 sample_ids <- c("Sample_01", "Sample_02", "Sample_03")
 
@@ -98,6 +100,11 @@ sample_ids
 
 length(sample_ids)
 
+
+
+# If you are unsure what a certain function does, and what argument it takes, you can put a "?" before the function and run that to bring up the documentation 
+
+?length
 
 ```
 
@@ -151,8 +158,92 @@ phyloseq.dogs
 
 ```
 
-How many samples are in the dataset?
+Now that we have our phyloseq object, let's survey what we have here
 
-species?
+```{r}
+#| eval: false
+#you can run the phyloseq object it's chunk to return some basic characteristics of the dataset 
 
-metadata categories?
+
+phyloseq.dogs
+#How many unique species are in the dataset?
+#How many samples?
+#How many metadata categories do we have? 
+
+
+```
+
+Let's look at each component of the phyloseq object
+
+```{r}
+#| eval: false
+#1) The OTU_table function can acess the "feature table"
+# We can save the feature table as a data frame (a table-like data structure)
+# Note: here we are using a function (otu_table) within a function (as.data.frame)
+
+phyloseq.dogs.otu.table <- as.data.frame(otu_table(phyloseq.dogs))
+
+#remember, you can view the variables by either running the variable itself as a line of code, or looking for it in the environment panel 
+
+
+
+```
+
+Any immediate observations here?
+
+```{r}
+#| eval: false
+#2) The tax_table function allows us to access the "taxonomy table"
+phyloseq.dogs.tax.table <- as.data.frame(tax_table(phyloseq.dogs))
+
+
+# Each row of the tax.table is a unique species that is found at least once in the dataset
+
+# You can inspect how the unique phyla by doing the following 
+# The "$" operator accesses a column of the data.frame 
+unique(phyloseq.dogs.tax.table$phylum)
+
+
+#you can add the "length" function to give the number of unique phyla 
+length(unique(phyloseq.dogs.tax.table$phylum))
+
+```
+
+How many unique family are there?
+
+genera?
+
+```{r}
+#| eval: false
+#3) The sample_data function allows us to access the "metadata"
+phyloseq.dogs.metadata <- as.data.frame(sample_data(phyloseq.dogs))
+
+#Go through the metadata columns to see what sorts of information we have on the samples 
+# Remember, this dataset contains dogs sampled longitudinally 
+
+#Start to think about what might categories might be interesting to test their associations with the microbiome
+
+
+
+```
+
+How many unique dogs do we have?
+
+diet groups?
+
+```{r}
+#| eval: false
+#We can always subset our phyloseq object to work with a subset of samples if we need to 
+
+# We can do this by using the subset_samples function a given metadata category 
+
+# Let's get a phyloseq object of just puppy samples (indicated by the "host_life_stage column)
+
+
+phyloseq.dogs.puppies <- subset_samples(phyloseq.dogs, host_life_stage == "puppy")
+
+```
+
+how many puppy samples are there?
+
+# Section 3: Visualization of Microbiome Data using Bar Plots

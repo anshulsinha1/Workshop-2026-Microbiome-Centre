@@ -435,27 +435,64 @@ Let's look at each component of the phyloseq object
 
 ```{r}
 #1) The OTU_table function can acess the "feature table"
+# We can save the feature table as a data frame (a table-like data structure)
+# Note: here we are using a function (otu_table) within a function (as.data.frame)
 
-ps_otu_df <- as.data.frame(otu_table(phyloseq.dogs)) #
-ps_otu_df
+phyloseq.dogs.otu.table <- as.data.frame(otu_table(phyloseq.dogs))
 
-#Any immediate observations here? 
-
-
-```
-
-```{r}
-#2) The sample_data function allows us to access the "metadata"
-sample_data(phyloseq.dogs)
-
-#Any 
+#remember, you can view the variables by either running the variable itself as a line of code, or looking for it in the environment panel 
 
 
 
 ```
 
+Any immediate observations here?
+
 ```{r}
-sample_sums(phyloseq.dogs)
+#2) The tax_table function allows us to access the "taxonomy table"
+phyloseq.dogs.tax.table <- as.data.frame(tax_table(phyloseq.dogs))
+
+
+# Each row of the tax.table is a unique species that is found at least once in the dataset
+
+# You can inspect how the unique phyla by doing the following 
+# The "$" operator accesses a column of the data.frame 
+unique(phyloseq.dogs.tax.table$phylum)
+
+
+#you can add the "length" function to give the number of unique phyla 
+length(unique(phyloseq.dogs.tax.table$phylum))
+
+```
+
+How many unique family are there?
+
+genera?
+
+```{r}
+#3) The sample_data function allows us to access the "metadata"
+phyloseq.dogs.metadata <- as.data.frame(sample_data(phyloseq.dogs))
+
+#Go through the metadata columns to see what sorts of information we have on the samples 
+# Remember, this dataset contains dogs sampled longitudinally 
+
+#Start to think about what might categories might be interesting to test their associations with the microbiome
+
+
+
+```
+
+How many unique dogs do we have?
+
+diet groups?
+
+```{r}
+#We can always subset our phyloseq object to work with a subset of samples if we need to 
+
+# We can do this by using the subset_samples function 
+
+# Let's 
+
 ```
 
 ```{r}
