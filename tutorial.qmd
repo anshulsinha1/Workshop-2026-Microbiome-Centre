@@ -13,7 +13,7 @@ You can answer questions as comments in the R chunks
 # Section 1: R basics Tutorial
 
 ```{r}
-#| eval: false
+#| results: hide    
 
 #R Concepts Tutorial - Part 1 
 
@@ -45,7 +45,6 @@ You can answer questions as comments in the R chunks
 ```
 
 ```{r}
-#| eval: false
 
 # R Concepts - Part 2
 
@@ -72,8 +71,6 @@ number_of_samples
 ```
 
 ```{r}
-#| eval: false
-
 # R concepts Part 3 
 
 # R Concepts Tutorial - Part 3: Functions
@@ -109,7 +106,9 @@ length(sample_ids)
 ```
 
 ```{r}
-#| eval: false
+#| results: hide    
+#| message: false
+#| warning: false
 
 # R concepts Part 4
 
@@ -130,8 +129,9 @@ library(stringr) #working with character strings
 ```
 
 ```{r}
-#| eval: false
-
+#| results: hide    
+#| message: false
+#| warning: false
 # R concepts Part 5 
 
 # We can load our phyloseq object and save it as the "phyloseq.dogs" variable by using the readRDS function and using the pathname where the object is found as an argument
@@ -150,33 +150,39 @@ phyloseq.dogs <-  readRDS("/Users/anshulsinha/Desktop/microbiome_center/centre-s
 Now that we have our phyloseq object, let's survey what we have here
 
 ```{r}
-#| eval: false
-
+#| results: hide    
+#| message: false
+#| warning: false
 #run the phyloseq object to get basic characteristics of the dataset
 
 phyloseq.dogs
 
 ```
 
-Now that we have our phyloseq object, let's survey what we have here
-
 ```{r}
-#| eval: false
+#| results: hide    
+#| message: false
+#| warning: false
+
 #you can run the phyloseq object it's chunk to return some basic characteristics of the dataset 
 
 
 phyloseq.dogs
-#How many unique species are in the dataset?
-#How many samples?
-#How many metadata categories do we have? 
+
 
 
 ```
 
+How many unique species are in the dataset?
+
+How many samples?
+
+How many metadata categories do we have?
+
 Let's look at each component of the phyloseq object
 
 ```{r}
-#| eval: false
+#| results: hide    
 #1) The OTU_table function can acess the "feature table"
 # We can save the feature table as a data frame (a table-like data structure)
 # Note: here we are using a function (otu_table) within a function (as.data.frame)
@@ -192,7 +198,7 @@ phyloseq.dogs.otu.table <- as.data.frame(otu_table(phyloseq.dogs))
 Any immediate observations here?
 
 ```{r}
-#| eval: false
+#| results: hide    
 #2) The tax_table function allows us to access the "taxonomy table"
 phyloseq.dogs.tax.table <- as.data.frame(tax_table(phyloseq.dogs))
 
@@ -214,7 +220,7 @@ How many unique family are there?
 genera?
 
 ```{r}
-#| eval: false
+#| results: hide    
 #3) The sample_data function allows us to access the "metadata"
 phyloseq.dogs.metadata <- as.data.frame(sample_data(phyloseq.dogs))
 
@@ -232,7 +238,7 @@ How many unique dogs do we have?
 diet groups?
 
 ```{r}
-#| eval: false
+#| results: hide    
 #We can always subset our phyloseq object to work with a subset of samples if we need to 
 
 # We can do this by using the subset_samples function a given metadata category 
@@ -247,3 +253,20 @@ phyloseq.dogs.puppies <- subset_samples(phyloseq.dogs, host_life_stage == "puppy
 how many puppy samples are there?
 
 # Section 3: Visualization of Microbiome Data using Bar Plots
+
+```{r}
+# We will be using a command called "comp_barplot" which takes our phyloseq object and creates relative abundance plots 
+
+#step 1) Use the tax_fix command to make the taxonomy appropriate for the comp_barplot function 
+#we will use our 
+
+fixed.physeq <- tax_fix(phyloseq.dogs.puppies)
+
+
+#Step 2) We can use the comp_barplot to create a barplot 
+# It takes two arguments 1) The "fixed" phyloseq object and 2) the taxonomic rank at which to create the plots 
+sample_data(fixed.physeq)
+
+comp_barplot(fixed.physeq, tax_level = "species", group_by = "host_age_group", label = NULL)
+
+```
