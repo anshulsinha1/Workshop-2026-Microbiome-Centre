@@ -1,5 +1,5 @@
 ---
-title: "tutorial"
+title: "Tutorial"
 ---
 
 # Overview
@@ -8,10 +8,9 @@ The necessary code for the workshop will be hosted here, alongside questions and
 
 You can copy and paste the code here into your file
 
-# R basics Tutorial
+# Section 1: R basics Tutorial
 
 ```{r}
-
 #| eval: false
 
 #R Concepts Tutorial - Part 1 
@@ -71,7 +70,6 @@ number_of_samples
 ```
 
 ```{r}
-
 #| eval: false
 
 # R concepts Part 3 
@@ -125,7 +123,6 @@ library(stringr) #working with character strings
 ```
 
 ```{r}
-
 #| eval: false
 
 # R concepts Part 5 
@@ -140,3 +137,5 @@ phyloseq.dogs <-  readRDS("/Users/anshulsinha/Desktop/microbiome_center/centre-s
 #phyloseq.dogs <- readRDS("/cloud/project/R_material/dogs_phyloseq.rds")
 
 ```
+
+# Section 2: Characterizing the Dataset and Phyloseq Object
