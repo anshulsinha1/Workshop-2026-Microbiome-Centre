@@ -2,9 +2,17 @@
 title: "tutorial"
 ---
 
+# Overview
+
+The necessary code for the workshop will be hosted here, alongside questions and instructions that build on the code posted
+
+You can copy and paste the code here into your file
+
+# R basics Tutorial
+
 ```{r}
 
-#| output: false
+#| eval: false
 
 #R Concepts Tutorial - Part 1 
 
@@ -36,7 +44,7 @@ title: "tutorial"
 ```
 
 ```{r}
-#| output: false
+#| eval: false
 
 # R Concepts - Part 2
 
@@ -64,7 +72,7 @@ number_of_samples
 
 ```{r}
 
-#| output: false
+#| eval: false
 
 # R concepts Part 3 
 
@@ -96,7 +104,7 @@ length(sample_ids)
 ```
 
 ```{r}
-#| output: false
+#| eval: false
 
 # R concepts Part 4
 
@@ -118,7 +126,7 @@ library(stringr) #working with character strings
 
 ```{r}
 
-#| output: false
+#| eval: false
 
 # R concepts Part 5 
 

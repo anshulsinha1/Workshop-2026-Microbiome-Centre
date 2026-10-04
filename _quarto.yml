@@ -9,6 +9,8 @@ website:
       - href: index.qmd
         text: Home
       - about.qmd
+      - href: tutorial.qmd      # <- new page
+        text: Tutorial          # <- link text
 
 format:
   html:
