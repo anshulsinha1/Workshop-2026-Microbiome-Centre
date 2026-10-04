@@ -139,3 +139,20 @@ phyloseq.dogs <-  readRDS("/Users/anshulsinha/Desktop/microbiome_center/centre-s
 ```
 
 # Section 2: Characterizing the Dataset and Phyloseq Object
+
+Now that we have our phyloseq object, let's survey what we have here
+
+```{r}
+#| eval: false
+
+#run the phyloseq object to get basic characteristics of the dataset
+
+phyloseq.dogs
+
+```
+
+How many samples are in the dataset?
+
+species?
+
+metadata categories?
