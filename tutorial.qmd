@@ -254,19 +254,246 @@ how many puppy samples are there?
 
 # Section 3: Visualization of Microbiome Data using Bar Plots
 
+-   Now that we have a sense of the samples we are working with, lets try to visualize some data
+
+-   A good way to get a first overview of microbiome data is through with simple bar plots. These aren’t perfect, but they can give us a nice first impression of what to expect
+
+-   We can make a simple bar plot using the Microviz comp_barplot command
+
+-   This command will plot (per sample) the relative abundance of bacteria at different taxonomic levels
+
 ```{r}
 # We will be using a command called "comp_barplot" which takes our phyloseq object and creates relative abundance plots 
 
 #step 1) Use the tax_fix command to make the taxonomy appropriate for the comp_barplot function 
-#we will use our 
 
-fixed.physeq <- tax_fix(phyloseq.dogs.puppies)
+#Lets do this using our phyloseq object that we originally made 
+
+fixed.physeq <- tax_fix(phyloseq.dogs)
 
 
 #Step 2) We can use the comp_barplot to create a barplot 
-# It takes two arguments 1) The "fixed" phyloseq object and 2) the taxonomic rank at which to create the plots 
+# It takes a minimum of two arguments, each separated by a comma 1) The "fixed" phyloseq object and 2) the taxonomic rank at which to create the plots 
+
+#we also added the "label = NULL" argument to not plot sample names to keep our plot cleaner 
+
+
+
+comp_barplot(fixed.physeq, tax_level = "phylum", label = NULL)
+
+
+#remember that we can run the following to look at the documentation of the function 
+?comp_barplot
+  
+#Not all these will be relevant, but some, like n_taxa can control how many distinct taxa we plot 
+
+comp_barplot(fixed.physeq, tax_level = "phylum", n_taxa = 12, label = NULL) 
+
+```
+
+What are the most abundant phyla in the dataset?
+
+Go through different levels of taxonomy, and report the most abundant members of the community.
+
+What levels of variation do you see between samples?
+
+Does this variation change as the levels of taxonomy become more resolute?
+
+```{r}
+#| results: hide    
+
+#It is probably useful to try to see how our taxa composition differs by different metadata categories
+
+#We can use the "group_by" argument to split our plots by a given category 
+
+
+#Remember, we can look at our metadata table by doing the following: 
 sample_data(fixed.physeq)
 
-comp_barplot(fixed.physeq, tax_level = "species", group_by = "host_age_group", label = NULL)
+
+#For instance to look at how composition differs between puppies and adults at the family level, we can do the following
+
+comp_barplot(fixed.physeq, tax_level = "family", n_taxa = 12, label = NULL, group_by = "host_life_stage") 
+
+
+```
+
+Are there obvious differences between the composition of the adult and puppies?
+
+If so, describe some general trends
+
+Does one group have more variation than the other?
+
+```{r}
+#| results: hide    
+
+#Let's focus just on the puppies
+#we can use the subsetted phyloseq object that we created earlier
+
+phyloseq.dogs.puppies <- subset_samples(phyloseq.dogs, host_life_stage == "puppy")
+
+
+#Reminder: we have to run tax_fix on this first 
+fixed.physeq.puppy <- tax_fix(phyloseq.dogs.puppies)
+
+
+#Then, we can run comp_barplot like we did earlier and test the effect of different metadata categories 
+
+#Remember, you can run the following to look at the metadata
+
+phyloseq.dogs.metadata.puppies <- as.data.frame(sample_data(phyloseq.dogs.puppies))
+
+
+
+
+```
+
+Are there metadata categories that seem to influence puppy microbiome composition more than others?
+
+Try to identify some species that are associated with a given group
+
+Since this is a longitudinal dataset, it may be interesting to follow the composition of a single dog over time. See if you can do this with the dog id "DMD_E_Rozsaszin". Note: you'll need to use the "host_subject_id" metadata column
+
+# Optional Section 3.1: Plotting individual taxa
+
+```{r}
+#Now that we've identified some taxa of interest, we can try plotting them individually to get a more clear look at their dynamics 
+
+#Let's plot how E. coli changes over age group 
+
+#We can use the tax_transform function to change our phyloseq object and normalize it using relative abundance and get our phyloseq object at the species level
+
+#it takes the phyloseq object as an argument, the "compositional" string to indicate we are transforming to get a relative abundance phyloseq object, and rank to do this at the genus level 
+
+phyloseq.dogs.puppies.relab.genus <- tax_transform(fixed.physeq.puppy, "compositional", rank = "genus") #
+
+
+# lets turn this back into a phyloseq object using the ps_get function
+
+phyloseq.dogs.puppies.relab.genus.ps <- ps_get(phyloseq.dogs.puppies.relab.genus) #returns a phyloseq object 
+
+
+#now we can add the relative abundance of Escherichia to the sample data as a column using ps_otu2samdat
+
+phyloseq.dogs.puppies.relab.genus.ps.escherichia <- ps_otu2samdat(phyloseq.dogs.puppies.relab.genus.ps, "Escherichia") 
+
+
+#now we can make a table with its abundance 
+phyloseq.dogs.puppies.relab.genus.ps.escherichia.table <-   samdat_tbl(phyloseq.dogs.puppies.relab.genus.ps.escherichia)
+
+#You can see there is a column called Escherichia with the relative abundance of Escherichia in every sample 
+
+
+
+#Now we can use ggplot2 to plot the abundance of this species 
+#ggplot2 takes our table as an argument, and then asks for our x and y-axes in the aes function 
+
+# we can specify we want this to be a boxplot using geom_boxplot
+# we can specify that we want to add individual points with geom jitter
+ggplot(phyloseq.dogs.puppies.relab.genus.ps.escherichia.table
+, aes(x = host_age_group, y = Escherichia, colour = host_age_group)) +
+  geom_boxplot(width = 0.5, colour = "grey") +
+  geom_jitter(width = 0.2, alpha = 0.5) 
+
+
+
+```
+
+Give this a try with another bacterial genus!
+
+# Section 4: Normalizing Sequencing Depth using Rarefaction
+
+-   While our bar plots have given us some nice qualitative measures of the community composition, can we assess changes in a more quantitative way?
+
+-   We can calculate changes in microbial diversity (the number of taxa present and how they are distributed)
+
+-   As covered in the lectures, we can assess within-sample diversity (alpha diversity) and between-sample diversity (beta-diversity). This involves calculating different diversity metrics and calculating ecological distance
+
+-   Before we do this, there is an important consideration: library size normalization!
+
+-   During a sequencing run, different samples will inevitably have different numbers of reads, which means we have to normalize the read depth of our samples to make accurate comparisons
+
+-   For the bar plots, we’ve calculated relative abundance, which essentially “normalized” the samples (reads of taxa/total reads in the sample) to make them comparable. Using relative abundance for normalization in diversity calculations is not generally advised. There is a lot of debate and controversy around what normalization approaches are the best.
+
+-   In reality, no single method is perfect. But we will be using a method called rarefaction. It’s relatively simple and a recently published [paper](https://pmc.ncbi.nlm.nih.gov/articles/PMC10900887/) by Schloss put forward that it is the best method for normalizing amplicon sequencing data
+
+-   Basically, rarefaction involves the random subsampling of reads in each sample to the SAME depth
+
+-   To illustrate the concept of rarefaction lets look at the distribution of reads in our samples
+
+```{r}
+#Above, we used total sum scaling to look at the proportions of bacterial taxa
+
+#As a technical artifact of sequencing, we may have different numbers of reads between samples 
+#We can look at the number of reads in each sample by using the "sample_sums" function on our phyloseq object 
+
+sample_sums(phyloseq.dogs.puppies)
+
+#we can find the min and max number of reads in our phyloseq object by doing the following
+min(sample_sums(phyloseq.dogs.puppies))
+max(sample_sums(phyloseq.dogs.puppies))
+
+
+#we can visualize this by saving the sample_sums as a dataframe and then plotting as a histogram 
+
+#save sample_sums as the variable "lib_sums"
+
+
+lib_sizes <- sample_sums(phyloseq.dogs.puppies)
+
+#can visualize lib_sizes using the "hist" function
+
+hist(lib_sizes,breaks = 50)
+
+
+
+hist(
+  lib_sizes,
+  breaks = 30,
+  xlab = "Total reads per sample",
+  col = "lightblue",
+  border = "white"
+)
+
+
+```
+
+Now, let's build a rarefaction curve to see if we've sequenced enough
+
+```{r}
+#First let's get a matrix from our phyloseq object
+#We are using "t" to transpose the rows and columns (rarecurve takes the taxa and abundance in opposite oritentation to phyloseq)
+
+matrix.phyloseq.dogs.puppies <- as(t(otu_table(phyloseq.dogs.puppies)), "matrix")
+
+## Calculate row sums (sequencing depth of each sample)
+
+row.sums.puppies <- rowSums(matrix.phyloseq.dogs.puppies)
+
+
+#Our curve might be messy if we plot ALL of our samples 
+
+# Lets order rows by row sums and take the 50 rows with the lowest sums
+matrix.phyloseq.dogs.puppies.low50 <-
+  matrix.phyloseq.dogs.puppies[order(row.sums.puppies)[1:50], ]
+
+
+?rarecurve
+#now we have a matrix that we can put into the rarecurve function! 
+#step = 1000  means that the function calculates species richness every 1000 sequences until the total number of species for that sample is reached
+
+rarecurve(matrix.phyloseq.dogs.puppies.low50, step = 1000, label = FALSE)
+
+
+```
+
+Are all samples plotted sequenced to sufficient depth?
+
+What would be a good depth to rarefy at?
+
+```{r}
+#Our lowest sequencing depth is: 
+min(sample_sums(phyloseq.dogs.puppies))
+
 
 ```
