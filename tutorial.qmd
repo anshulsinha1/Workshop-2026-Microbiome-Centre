@@ -173,13 +173,13 @@ phyloseq.dogs
 
 ```
 
-How many unique species are in the dataset?
+**How many unique species are in the dataset?**
 
-How many samples?
+**How many samples?**
 
-How many metadata categories do we have?
+**How many metadata categories do we have?**
 
-Let's look at each component of the phyloseq object
+**Let's look at each component of the phyloseq objec**t
 
 ```{r}
 #| results: hide    
@@ -195,7 +195,7 @@ phyloseq.dogs.otu.table <- as.data.frame(otu_table(phyloseq.dogs))
 
 ```
 
-Any immediate observations here?
+**Any immediate observations here?**
 
 ```{r}
 #| results: hide    
@@ -215,9 +215,9 @@ length(unique(phyloseq.dogs.tax.table$phylum))
 
 ```
 
-How many unique family are there?
+**How many unique family are there?**
 
-genera?
+**genera?**
 
 ```{r}
 #| results: hide    
@@ -233,9 +233,9 @@ phyloseq.dogs.metadata <- as.data.frame(sample_data(phyloseq.dogs))
 
 ```
 
-How many unique dogs do we have?
+**How many unique dogs do we have?**
 
-diet groups?
+**diet groups?**
 
 ```{r}
 #| results: hide    
@@ -250,7 +250,7 @@ phyloseq.dogs.puppies <- subset_samples(phyloseq.dogs, host_life_stage == "puppy
 
 ```
 
-how many puppy samples are there?
+**how many puppy samples are there?**
 
 # Section 3: Visualization of Microbiome Data using Bar Plots
 
@@ -263,6 +263,8 @@ how many puppy samples are there?
 -   This command will plot (per sample) the relative abundance of bacteria at different taxonomic levels
 
 ```{r}
+#| message: false
+#| warning: false
 # We will be using a command called "comp_barplot" which takes our phyloseq object and creates relative abundance plots 
 
 #step 1) Use the tax_fix command to make the taxonomy appropriate for the comp_barplot function 
@@ -287,17 +289,17 @@ comp_barplot(fixed.physeq, tax_level = "phylum", label = NULL)
   
 #Not all these will be relevant, but some, like n_taxa can control how many distinct taxa we plot 
 
-comp_barplot(fixed.physeq, tax_level = "phylum", n_taxa = 12, label = NULL) 
+#comp_barplot(fixed.physeq, tax_level = "phylum", n_taxa = 12, label = NULL) 
 
 ```
 
-What are the most abundant phyla in the dataset?
+**What are the most abundant phyla in the dataset?**
 
-Go through different levels of taxonomy, and report the most abundant members of the community.
+**Go through different levels of taxonomy, and report the most abundant members of the community.**
 
-What levels of variation do you see between samples?
+**What levels of variation do you see between samples?**
 
-Does this variation change as the levels of taxonomy become more resolute?
+**Does this variation change as the levels of taxonomy become more resolute?**
 
 ```{r}
 #| results: hide    
@@ -318,11 +320,11 @@ comp_barplot(fixed.physeq, tax_level = "family", n_taxa = 12, label = NULL, grou
 
 ```
 
-Are there obvious differences between the composition of the adult and puppies?
+**Are there obvious differences between the composition of the adult and puppies?**
 
-If so, describe some general trends
+**If so, describe some general trends**
 
-Does one group have more variation than the other?
+**Does one group have more variation than the other?**
 
 ```{r}
 #| results: hide    
@@ -348,11 +350,11 @@ phyloseq.dogs.metadata.puppies <- as.data.frame(sample_data(phyloseq.dogs.puppie
 
 ```
 
-Are there metadata categories that seem to influence puppy microbiome composition more than others?
+**Are there metadata categories that seem to influence puppy microbiome composition more than others?**
 
-Try to identify some species that are associated with a given group
+**Try to identify some species that are associated with a given group**
 
-Since this is a longitudinal dataset, it may be interesting to follow the composition of a single dog over time. See if you can do this with the dog id "DMD_E_Rozsaszin". Note: you'll need to use the "host_subject_id" metadata column
+**Since this is a longitudinal dataset, it may be interesting to follow the composition of a single dog over time. See if you can do this with the dog id "DMD_E_Rozsaszin". Note: you'll need to use the "host_subject_id" metadata column**
 
 # Optional Section 3.1: Plotting individual taxa
 
@@ -392,7 +394,7 @@ phyloseq.dogs.puppies.relab.genus.ps.escherichia.table <-   samdat_tbl(phyloseq.
 # we can specify that we want to add individual points with geom jitter
 ggplot(phyloseq.dogs.puppies.relab.genus.ps.escherichia.table
 , aes(x = host_age_group, y = Escherichia, colour = host_age_group)) +
-  geom_boxplot(width = 0.5, colour = "grey") +
+  geom_boxplot(width = 0.5, colour = "grey", outlier.shape = NA) +
   geom_jitter(width = 0.2, alpha = 0.5) 
 
 
@@ -422,6 +424,9 @@ Give this a try with another bacterial genus!
 -   To illustrate the concept of rarefaction lets look at the distribution of reads in our samples
 
 ```{r}
+#| results: hide    
+#| message: false
+#| warning: false
 #Above, we used total sum scaling to look at the proportions of bacterial taxa
 
 #As a technical artifact of sequencing, we may have different numbers of reads between samples 
@@ -433,7 +438,9 @@ sample_sums(phyloseq.dogs.puppies)
 min(sample_sums(phyloseq.dogs.puppies))
 max(sample_sums(phyloseq.dogs.puppies))
 
+```
 
+```{r}
 #we can visualize this by saving the sample_sums as a dataframe and then plotting as a histogram 
 
 #save sample_sums as the variable "lib_sums"
@@ -461,6 +468,8 @@ hist(
 Now, let's build a rarefaction curve to see if we've sequenced enough
 
 ```{r}
+#| results: hide    
+
 #First let's get a matrix from our phyloseq object
 #We are using "t" to transpose the rows and columns (rarecurve takes the taxa and abundance in opposite oritentation to phyloseq)
 
@@ -487,13 +496,265 @@ rarecurve(matrix.phyloseq.dogs.puppies.low50, step = 1000, label = FALSE)
 
 ```
 
-Are all samples plotted sequenced to sufficient depth?
+**Are all samples plotted sequenced to sufficient depth?**
 
-What would be a good depth to rarefy at?
+**What would be a good depth to rarefy at?**
 
 ```{r}
 #Our lowest sequencing depth is: 
-min(sample_sums(phyloseq.dogs.puppies))
+min(sample_sums(phyloseq.dogs.puppies)) #42984
+
+```
+
+We can go ahead an rarefy at the lowest sequencing depth. This will ensure all samples can be rarefied, and we know that all samples at this depth are sequenced sufficiently
+
+```{r}
+#| message: false
+#| warning: false
+#We can now rarefy our phyloseq object by using the "rarefy_even_depth" function, which takes the phyloseq object as one argument and the sample.size (depth) that we want to subsample at (which we can set to the minimum depth across all samples)
+
+rarefied.phyloseq.puppies <- rarefy_even_depth(phyloseq.dogs.puppies, sample.size = min(sample_sums(phyloseq.dogs.puppies)))
+
+#physloseq object as input, sample.size = the depth to subsample at (in this case the minimum # of reads in samples on our PS object)
+```
+
+# Section 5: Characterizing Within-Sample Diversity
+
+```{r}
+#| results: hide    
+#| message: false
+#| warning: false
+#characterizing alpha diversity is quite easy with the phyloseq package
+
+
+#the estimate_richness function will give a dataframe of various measures of alpha diversity for each sample 
+
+#remember that some alpha diversity measures like Shannon and Simpons combine both eveness and richness 
+
+#Remember that we will want to use our rarefied phyloseq object 
+estimate_richness(rarefied.phyloseq.puppies)
+
 
 
 ```
+
+**What does "Observed" refer to here?**
+
+```{r}
+#If we want to visualize alpha diversity, we can use the plot_richness function, which works in a similar fashion 
+
+plot_richness(rarefied.phyloseq.puppies)
+
+
+#This is pretty non-sensical, as it is trying to fit all of the samples in a single plot across 7 different alpha diversity measures 
+
+#Let's narrow this down to just look at richness 
+#The measures argument tells us which alpha diversity measurements we want to plot 
+
+plot_richness(rarefied.phyloseq.puppies, measures=c("Observed"))
+
+#Still not super informative 
+#Let's define our x-axis to a specific metadata category? 
+
+
+#Let's see if Kennel dictates richness at all
+#We can do a boxplot to better visualize the spread 
+plot_richness(rarefied.phyloseq.puppies, x="kennel", measures=c("Observed")) + 
+  geom_boxplot() 
+
+
+```
+
+In the earlier section, we saw that host age group had a strong effect on microbiome composition
+
+**See how richness, Shannon, and Simpson diversity are impacted by host age**
+
+**Do the trends in alpha diversity differ depending on the metric used?**
+
+**In the paper that describes this dataset, they find that the physiological state of the mother (Ie- pregnancy stage and lactation) has an impact on alpha diversity**
+
+**Can you determine which at which stages do mothers have a reduction in alpha diversity?**
+
+```{r}
+#Since we no longer want to work with just the puppies,we will need to go back to the original phyloseq object 
+
+#The physiological state of the mother is indicated by the column: "mother_physiological_state_category"
+
+
+#In the metadata, samples that don't apply to the mothers' physiological state (Ie- puppy samples) are labelled "Not Applicable"
+
+#We can use subset_samples and get columns that ARE NOT "Not Applicable". The "!" operator does this
+
+phyloseq.moms <- subset_samples(phyloseq.dogs, mother_physiological_state_category != "Not Applicable")
+
+#Now determine how alpha diversity is impacted by the physiological state category 
+```
+
+# Section 6: Beta-Diversity
+
+-   One of the best ways to assess changes between microbial communities is by measuring between sample ecological distance
+
+-   There are several distance metrics one can use to assess differences. Regardless, these metrics generally work by measuring the richness and/or the eveness of the community.
+
+-   While others are used, generally there are 4 main distance metrics used in microbial ecology analyses: 1) Bray-Curtis (richness + eveness), 2) Weighted Unifrac distance (richness + eveness + phylogenetic relatedness), 3) Jaccard distance (richness), 4) Unweighted Unifrac distance (richness + phylogenetic relatedness).
+
+-   We don't have the time to go into how to create a phylogenetic tree today, so we will focus on Bray-Curtis and Jaccard distance
+
+-   Lets start by calculating distance using the distance function in phyloseq
+
+-   You can list all available distance metrics that this function is compatible using:
+
+```{r}
+#| results: hide    
+#| message: false
+#| warning: false
+distanceMethodList
+
+#And you can create a matrix of distance between each sample using the distance function
+
+#The distance function takes two arguments: 1) THe rarefied phyloseq object and 2) The method of distance we want to calcualte 
+
+#We will do this on our rarefied.puppies phyloseq object and calculate bray distance 
+
+bray.distance.puppies <- phyloseq::distance(rarefied.phyloseq.puppies, method = "bray")
+
+
+#If we wanted to calculate jaccard distance we could do the following
+
+jaccard.distance.puppies <- phyloseq::distance(rarefied.phyloseq.puppies, method = "jaccard")
+
+
+
+```
+
+-   Take a look at both of these matrices
+
+-   This returns a matrix with the distances between samples shown. For Bray-Curtis distance, all values will be between 0 and 1
+
+-   There are plenty of things that one can do with a distance matrix, but the most common is to perform an ordination. This process will essentially take our distance matrix and represent our samples in a two-dimensional space, where samples with less distance between each other are closer together and samples with greater distances are further apart.
+
+-   There are lots of different ordination methods, but we’ll mostly focus on principal coordinate analysis (PCoA) plots. These 1) take your distance matrix, 2) Performs a “decomposition”, which projects the data into 2-D space while trying to best represent the distances between samples. The mathematical details are not important for our purposes, but the important thing to know is that we’ll end up with two axes that represent variance in the data. The variance explained is proportional to the distances between samples.
+
+-   This will make sense if we perform an ordination!
+
+-   We can calculate the distance and plot an ordination in two steps:
+
+-   Let's do this on bray distance first
+
+```{r}
+#| results: hide    
+#| message: false
+#| warning: false
+#Bray Ordination 
+#ordinate function takes 1) The rarefied phyloseq object 2) The method of ordination we want to perform (in this case PCoA) 3) The distance matrix 
+
+pcoa.ord.bray.puppies <- phyloseq::ordinate(rarefied.phyloseq.puppies, method ="PCoA", distance = bray.distance.puppies)
+
+#now we can plot this using the plot_ordination function 
+
+plot_ordination(rarefied.phyloseq.puppies, pcoa.ord.bray.puppies)
+
+
+#And we can colour our points by using the colour argument  (ie- by kennel and diet group)
+
+
+plot_ordination(rarefied.phyloseq.puppies, pcoa.ord.bray.puppies, color = "kennel")
+
+plot_ordination(rarefied.phyloseq.puppies, pcoa.ord.bray.puppies, color = "host_diet_group")
+
+
+```
+
+-   We have a PCoA plot now! **Imagine two points on the PCoA plot above. In case one, these two points are distributed vertically and in case 2, the points are distributed horizontally (equidistant to case 1). In which case is there greater distance between points?**
+
+-   **Try colouring the points of the PCoA by host age group. What do you see?**
+
+-   **Try making a PCoA plot using jaccard distance instead of Bray and compare. Qualitatively, which distance metric yields higher differences between the groups. Why would this be the case?**
+
+# Section 7: Interactive Ordination Plots
+
+Microviz has a nice interactive tool to make and explore PCoA plots. Let's explore that a little
+
+```{r}
+#| results: hide    
+#| message: false
+#| warning: false
+#You can run the following using the ord_explore function and use the rarefied phyloseq as an argument 
+ord_explore(rarefied.phyloseq.puppies)
+
+# A window should pop up in your browser that will eventually give you options to "edit ordination". 
+
+#Select the following: 
+#Taxonomic Rank: Species 
+#Tax Transformation: No transformation 
+# Distance: Bray 
+#Ordination: PCoA 
+
+#On left hand side: Select "host_age_group" under "colour"
+
+#You can then select the "lasso" button at the top right to select a group of points. This will populate those points with a bar plot beneath 
+
+#Play around with the settings: You can select the gear (settings) to change the distance matrix, the taxonomy rank, etc. 
+
+#See what taxa are associated with what groups of samples
+
+
+
+```
+
+# Section 8: Putting it All Together
+
+In the publication that uses this dataset, they have a small subset of data, where puppies from two litters from the same dam, one born vaginally, and one by cesarean section were compared. They were diet and age-matched.
+
+Using what we've learned so far, use bar plots, alpha, and beta-diversity approaches to compare the puppies born vaginally and by cesearean section.
+
+```{r}
+#To access these samples, we need to get a phyloseq object of samples from this birth study
+sample_data(phyloseq.dogs)
+phyloseq.birth.study <- subset_samples(phyloseq.dogs, birthstudy == "yes")
+
+#from here, you can use the puppies_mode_of_delivery column for comparison
+
+sample_data(phyloseq.birth.study)
+```
+
+# Section 9: Statistical Analyses on Beta-Diversity
+
+Our focus so far has been on visualization and qualitative observations. How do we actually statistically test differences in microbiome composition.
+
+PERMANOVA tests whether microbiome composition differs among groups using a distance matrix, such as Bray–Curtis dissimilarity. PERMANOVA asks whether your metadata group labels (ie **diet**, **age group**, birth mode) are significantly associated with differences in the overall microbiome composition that are larger than you would see if the labels were assigned randomly.
+
+Imagine coloured labels placed on points in a PCoA plot:
+
+-   If red, green, blue, and purple labels are scattered randomly throughout the plot, shuffling their labels should not change the degree of apparent group separation much.
+
+-   If samples of the same colour cluster or occupy different areas of the ordination, the true labels produce greater group-associated structure than random shuffles.
+
+-   Let's test this using the birth study as an example
+
+```{r}
+#Step 1: Create Distance Matrix From Rarefied Phyloseq Object
+
+rarefied.phyloseq.birth.study <- rarefy_even_depth(phyloseq.birth.study, sample.size = min(sample_sums(phyloseq.birth.study)))
+
+
+bray.distance.puppies.birthstudy <- phyloseq::distance(rarefied.phyloseq.birth.study, method = "bray")
+
+
+#Step 2: Extract Metadata From the Phyloseq Object 
+
+meta.birth <- data.frame(sample_data(rarefied.phyloseq.birth.study))
+
+
+#Step 3: Run the adonis2 function, which takes your distance matrix, your variable of interest, and the metadata as input 
+
+adonis2(bray.distance.puppies.birthstudy ~ puppies_mode_of_delivery, data = meta.birth)
+
+
+
+
+```
+
+Here, we can see the output of the adonis test. The two important columns for us are the p-value column, which tells us that the delivery mode does have a significant effect on microbiome composition! The R2 column tells us what proportion of total variance of the data is explained by a certain factor (delivery mode) in this case.
+
+**See if the sex of the puppies has a significant effect on composition. Is the effect larger or smaller than delivery mode?**
