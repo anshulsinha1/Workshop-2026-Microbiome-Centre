@@ -168,7 +168,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#section-6-beta-diversity" id="toc-section-6-beta-diversity" class="nav-link" data-scroll-target="#section-6-beta-diversity">Section 6: Beta-Diversity</a></li>
   <li><a href="#section-7-interactive-ordination-plots" id="toc-section-7-interactive-ordination-plots" class="nav-link" data-scroll-target="#section-7-interactive-ordination-plots">Section 7: Interactive Ordination Plots</a></li>
   <li><a href="#section-8-putting-it-all-together" id="toc-section-8-putting-it-all-together" class="nav-link" data-scroll-target="#section-8-putting-it-all-together">Section 8: Putting it All Together</a></li>
-  <li><a href="#section-9-statistical-analyses-on-beta-diversity" id="toc-section-9-statistical-analyses-on-beta-diversity" class="nav-link" data-scroll-target="#section-9-statistical-analyses-on-beta-diversity">Section 9: Statistical Analyses on Beta-Diversity</a></li>
+  <li><a href="#section-9-statistical-analyses-for-beta-diversity" id="toc-section-9-statistical-analyses-for-beta-diversity" class="nav-link" data-scroll-target="#section-9-statistical-analyses-for-beta-diversity">Section 9: Statistical Analyses for Beta-Diversity</a></li>
   </ul>
 </nav>
     </div>
@@ -263,7 +263,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a><span class="co"># 2. Parentheses ()</span></span>
 <span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a><span class="co"># 3. An input inside the parentheses, called an "argument"</span></span>
 <span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a><span class="co"># For example, the c() function combines several values into one vector (ordered collection of values):</span></span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a><span class="co"># For example, the () function combines several values into one vector (ordered collection of values):</span></span>
 <span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>sample_ids <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"Sample_01"</span>, <span class="st">"Sample_02"</span>, <span class="st">"Sample_03"</span>)</span>
 <span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a></span>
@@ -380,6 +380,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a>phyloseq.dogs.puppies <span class="ot">&lt;-</span> <span class="fu">subset_samples</span>(phyloseq.dogs, host_life_stage <span class="sc">==</span> <span class="st">"puppy"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p><strong>how many puppy samples are there?</strong></p>
+<p><strong>Try subsetting the phyloseq object in different ways on different metadata categories</strong></p>
+<p><strong>Confirm this worked by checking the metadata file from the phyloseq object</strong></p>
 </section>
 <section id="section-3-visualization-of-microbiome-data-using-bar-plots" class="level1">
 <h1>Section 3: Visualization of Microbiome Data using Bar Plots</h1>
@@ -3472,89 +3474,13 @@ BKCF_0_AF4_230521                 no</code></pre>
 </div>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb43"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a>phyloseq.birth.study <span class="ot">&lt;-</span> <span class="fu">subset_samples</span>(phyloseq.dogs, birthstudy <span class="sc">==</span> <span class="st">"yes"</span>)</span>
 <span id="cb43-2"><a href="#cb43-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb43-3"><a href="#cb43-3" aria-hidden="true" tabindex="-1"></a><span class="co">#from here, you can use the puppies_mode_of_delivery column for comparison</span></span>
-<span id="cb43-4"><a href="#cb43-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb43-5"><a href="#cb43-5" aria-hidden="true" tabindex="-1"></a><span class="fu">sample_data</span>(phyloseq.birth.study)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>                     sample_title host_subject_id host_age_weeks host_age_group
-LPL_M_PF1_240510 LPL_M_PF1_240510      LPL_M_Lila           9.00  Above 8 Weeks
-LPL_M_PM1_240506 LPL_M_PM1_240506      LPL_P_Zold           8.43  Above 8 Weeks
-LPL_P_PF3_230729 LPL_P_PF3_230729     LPL_P_Piros           8.14  Above 8 Weeks
-LPL_P_PF2_230729 LPL_P_PF2_230729      LPL_P_Pink           8.14  Above 8 Weeks
-LPL_P_PF2_230805 LPL_P_PF2_230805      LPL_P_Pink           9.14  Above 8 Weeks
-LPL_M_PF4_240510 LPL_M_PF4_240510 LPL_M_Rozsaszin           9.00  Above 8 Weeks
-LPL_P_PM2_230729 LPL_P_PM2_230729      LPL_P_Zold           8.14  Above 8 Weeks
-LPL_M_PM1_240510 LPL_M_PM1_240510       LPL_M_Kek           9.00  Above 8 Weeks
-LPL_M_PF2_240506 LPL_M_PF2_240506   LPL_M_Narancs           8.43  Above 8 Weeks
-LPL_P_PM1_230805 LPL_P_PM1_230805       LPL_P_Kek           9.14  Above 8 Weeks
-LPL_P_PM1_230729 LPL_P_PM1_230729       LPL_P_Kek           8.14  Above 8 Weeks
-LPL_M_PF3_240506 LPL_M_PF3_240506     LPL_M_Piros           8.43  Above 8 Weeks
-LPL_M_PF4_240506 LPL_M_PF4_240506 LPL_M_Rozsaszin           8.43  Above 8 Weeks
-LPL_M_PF1_240506 LPL_M_PF1_240506      LPL_M_Lila           8.43  Above 8 Weeks
-LPL_M_PF2_240510 LPL_M_PF2_240510   LPL_M_Narancs           9.00  Above 8 Weeks
-LPL_M_PF3_240510 LPL_M_PF3_240510     LPL_M_Piros           9.00  Above 8 Weeks
-LPL_P_PF1_230729 LPL_P_PF1_230729      LPL_P_Lila           8.14  Above 8 Weeks
-                 host_sex host_life_stage host_diet_group
-LPL_M_PF1_240510     male           puppy      HPLC-puppy
-LPL_M_PM1_240506     male           puppy      HPLC-puppy
-LPL_P_PF3_230729   female           puppy      HPLC-puppy
-LPL_P_PF2_230729   female           puppy      HPLC-puppy
-LPL_P_PF2_230805   female           puppy      HPLC-puppy
-LPL_M_PF4_240510     male           puppy      HPLC-puppy
-LPL_P_PM2_230729     male           puppy      HPLC-puppy
-LPL_M_PM1_240510     male           puppy      HPLC-puppy
-LPL_M_PF2_240506     male           puppy      HPLC-puppy
-LPL_P_PM1_230805     male           puppy      HPLC-puppy
-LPL_P_PM1_230729     male           puppy      HPLC-puppy
-LPL_M_PF3_240506     male           puppy      HPLC-puppy
-LPL_M_PF4_240506     male           puppy      HPLC-puppy
-LPL_M_PF1_240506     male           puppy      HPLC-puppy
-LPL_M_PF2_240510     male           puppy      HPLC-puppy
-LPL_M_PF3_240510     male           puppy      HPLC-puppy
-LPL_P_PF1_230729   female           puppy      HPLC-puppy
-                 mother_physiological_state_category         kennel
-LPL_M_PF1_240510                                &lt;NA&gt; Le Petit Lapin
-LPL_M_PM1_240506                                &lt;NA&gt; Le Petit Lapin
-LPL_P_PF3_230729                                &lt;NA&gt; Le Petit Lapin
-LPL_P_PF2_230729                                &lt;NA&gt; Le Petit Lapin
-LPL_P_PF2_230805                                &lt;NA&gt; Le Petit Lapin
-LPL_M_PF4_240510                                &lt;NA&gt; Le Petit Lapin
-LPL_P_PM2_230729                                &lt;NA&gt; Le Petit Lapin
-LPL_M_PM1_240510                                &lt;NA&gt; Le Petit Lapin
-LPL_M_PF2_240506                                &lt;NA&gt; Le Petit Lapin
-LPL_P_PM1_230805                                &lt;NA&gt; Le Petit Lapin
-LPL_P_PM1_230729                                &lt;NA&gt; Le Petit Lapin
-LPL_M_PF3_240506                                &lt;NA&gt; Le Petit Lapin
-LPL_M_PF4_240506                                &lt;NA&gt; Le Petit Lapin
-LPL_M_PF1_240506                                &lt;NA&gt; Le Petit Lapin
-LPL_M_PF2_240510                                &lt;NA&gt; Le Petit Lapin
-LPL_M_PF3_240510                                &lt;NA&gt; Le Petit Lapin
-LPL_P_PF1_230729                                &lt;NA&gt; Le Petit Lapin
-                 puppies_mode_of_delivery birthstudy
-LPL_M_PF1_240510       Cesarean-delivered        yes
-LPL_M_PM1_240506       Cesarean-delivered        yes
-LPL_P_PF3_230729      Vaginally delivered        yes
-LPL_P_PF2_230729      Vaginally delivered        yes
-LPL_P_PF2_230805      Vaginally delivered        yes
-LPL_M_PF4_240510       Cesarean-delivered        yes
-LPL_P_PM2_230729      Vaginally delivered        yes
-LPL_M_PM1_240510       Cesarean-delivered        yes
-LPL_M_PF2_240506       Cesarean-delivered        yes
-LPL_P_PM1_230805      Vaginally delivered        yes
-LPL_P_PM1_230729      Vaginally delivered        yes
-LPL_M_PF3_240506       Cesarean-delivered        yes
-LPL_M_PF4_240506       Cesarean-delivered        yes
-LPL_M_PF1_240506       Cesarean-delivered        yes
-LPL_M_PF2_240510       Cesarean-delivered        yes
-LPL_M_PF3_240510       Cesarean-delivered        yes
-LPL_P_PF1_230729      Vaginally delivered        yes</code></pre>
-</div>
+<span id="cb43-3"><a href="#cb43-3" aria-hidden="true" tabindex="-1"></a><span class="co">#from here, you can use the puppies_mode_of_delivery column for comparison</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </section>
-<section id="section-9-statistical-analyses-on-beta-diversity" class="level1">
-<h1>Section 9: Statistical Analyses on Beta-Diversity</h1>
-<p>Our focus so far has been on visualization and qualitative observations. How do we actually statistically test differences in microbiome composition.</p>
-<p>PERMANOVA tests whether microbiome composition differs among groups using a distance matrix, such as Bray–Curtis dissimilarity. PERMANOVA asks whether your metadata group labels (ie <strong>diet</strong>, <strong>age group</strong>, birth mode) are significantly associated with differences in the overall microbiome composition that are larger than you would see if the labels were assigned randomly.</p>
+<section id="section-9-statistical-analyses-for-beta-diversity" class="level1">
+<h1>Section 9: Statistical Analyses for Beta-Diversity</h1>
+<p>Our focus so far has been on visualization and qualitative observations. How do we actually statistically test differences in microbiome composition between groups?</p>
+<p>PERMANOVA tests whether microbiome composition differs among groups using a distance matrix, such as Bray–Curtis dissimilarity. PERMANOVA asks whether the metadata group labels (ie <strong>diet</strong>, <strong>age group</strong>, birth mode) are associated with differences in the overall microbiome composition that are larger than you would see if the labels were assigned randomly.</p>
 <p>Imagine coloured labels placed on points in a PCoA plot:</p>
 <ul>
 <li><p>If red, green, blue, and purple labels are scattered randomly throughout the plot, shuffling their labels should not change the degree of apparent group separation much.</p></li>
@@ -3562,9 +3488,9 @@ LPL_P_PF1_230729      Vaginally delivered        yes</code></pre>
 <li><p>Let’s test this using the birth study as an example</p></li>
 </ul>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb45"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a><span class="co">#Step 1: Create Distance Matrix From Rarefied Phyloseq Object</span></span>
-<span id="cb45-2"><a href="#cb45-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb45-3"><a href="#cb45-3" aria-hidden="true" tabindex="-1"></a>rarefied.phyloseq.birth.study <span class="ot">&lt;-</span> <span class="fu">rarefy_even_depth</span>(phyloseq.birth.study, <span class="at">sample.size =</span> <span class="fu">min</span>(<span class="fu">sample_sums</span>(phyloseq.birth.study)))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb44"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a><span class="co">#Step 1: Create Distance Matrix From Rarefied Phyloseq Object</span></span>
+<span id="cb44-2"><a href="#cb44-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb44-3"><a href="#cb44-3" aria-hidden="true" tabindex="-1"></a>rarefied.phyloseq.birth.study <span class="ot">&lt;-</span> <span class="fu">rarefy_even_depth</span>(phyloseq.birth.study, <span class="at">sample.size =</span> <span class="fu">min</span>(<span class="fu">sample_sums</span>(phyloseq.birth.study)))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>You set `rngseed` to FALSE. Make sure you've set &amp; recorded
  the random seed of your session for reproducibility.
@@ -3574,23 +3500,23 @@ See `?set.seed`</code></pre>
 <pre><code>...</code></pre>
 </div>
 <div class="cell-output cell-output-stderr">
-<pre><code>1206OTUs were removed because they are no longer 
+<pre><code>1208OTUs were removed because they are no longer 
 present in any sample after random subsampling</code></pre>
 </div>
 <div class="cell-output cell-output-stderr">
 <pre><code>...</code></pre>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb50"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a>bray.distance.puppies.birthstudy <span class="ot">&lt;-</span> phyloseq<span class="sc">::</span><span class="fu">distance</span>(rarefied.phyloseq.birth.study, <span class="at">method =</span> <span class="st">"bray"</span>)</span>
-<span id="cb50-2"><a href="#cb50-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb50-3"><a href="#cb50-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb50-4"><a href="#cb50-4" aria-hidden="true" tabindex="-1"></a><span class="co">#Step 2: Extract Metadata From the Phyloseq Object </span></span>
-<span id="cb50-5"><a href="#cb50-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb50-6"><a href="#cb50-6" aria-hidden="true" tabindex="-1"></a>meta.birth <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="fu">sample_data</span>(rarefied.phyloseq.birth.study))</span>
-<span id="cb50-7"><a href="#cb50-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb50-8"><a href="#cb50-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb50-9"><a href="#cb50-9" aria-hidden="true" tabindex="-1"></a><span class="co">#Step 3: Run the adonis2 function, which takes your distance matrix, your variable of interest, and the metadata as input </span></span>
-<span id="cb50-10"><a href="#cb50-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb50-11"><a href="#cb50-11" aria-hidden="true" tabindex="-1"></a><span class="fu">adonis2</span>(bray.distance.puppies.birthstudy <span class="sc">~</span> puppies_mode_of_delivery, <span class="at">data =</span> meta.birth)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb49"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb49-1"><a href="#cb49-1" aria-hidden="true" tabindex="-1"></a>bray.distance.puppies.birthstudy <span class="ot">&lt;-</span> phyloseq<span class="sc">::</span><span class="fu">distance</span>(rarefied.phyloseq.birth.study, <span class="at">method =</span> <span class="st">"bray"</span>)</span>
+<span id="cb49-2"><a href="#cb49-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb49-3"><a href="#cb49-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb49-4"><a href="#cb49-4" aria-hidden="true" tabindex="-1"></a><span class="co">#Step 2: Extract Metadata From the Phyloseq Object </span></span>
+<span id="cb49-5"><a href="#cb49-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb49-6"><a href="#cb49-6" aria-hidden="true" tabindex="-1"></a>meta.birth <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="fu">sample_data</span>(rarefied.phyloseq.birth.study))</span>
+<span id="cb49-7"><a href="#cb49-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb49-8"><a href="#cb49-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb49-9"><a href="#cb49-9" aria-hidden="true" tabindex="-1"></a><span class="co">#Step 3: Run the adonis2 function, which takes your distance matrix, your variable of interest, and the metadata as input </span></span>
+<span id="cb49-10"><a href="#cb49-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb49-11"><a href="#cb49-11" aria-hidden="true" tabindex="-1"></a><span class="fu">adonis2</span>(bray.distance.puppies.birthstudy <span class="sc">~</span> puppies_mode_of_delivery, <span class="at">data =</span> meta.birth)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Permutation test for adonis under reduced model
 Permutation: free
@@ -3598,9 +3524,9 @@ Number of permutations: 999
 
 adonis2(formula = bray.distance.puppies.birthstudy ~ puppies_mode_of_delivery, data = meta.birth)
          Df SumOfSqs      R2      F Pr(&gt;F)    
-Model     1  0.49181 0.31149 6.7862  0.001 ***
-Residual 15  1.08707 0.68851                  
-Total    16  1.57888 1.00000                  
+Model     1  0.49367 0.31314 6.8384  0.001 ***
+Residual 15  1.08288 0.68686                  
+Total    16  1.57655 1.00000                  
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 </div>

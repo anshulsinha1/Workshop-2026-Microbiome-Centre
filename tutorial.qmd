@@ -82,7 +82,7 @@ number_of_samples
 # 2. Parentheses ()
 # 3. An input inside the parentheses, called an "argument"
 
-# For example, the c() function combines several values into one vector (ordered collection of values):
+# For example, the () function combines several values into one vector (ordered collection of values):
 
 sample_ids <- c("Sample_01", "Sample_02", "Sample_03")
 
@@ -251,6 +251,10 @@ phyloseq.dogs.puppies <- subset_samples(phyloseq.dogs, host_life_stage == "puppy
 ```
 
 **how many puppy samples are there?**
+
+**Try subsetting the phyloseq object in different ways on different metadata categories**
+
+**Confirm this worked by checking the metadata file from the phyloseq object**
 
 # Section 3: Visualization of Microbiome Data using Bar Plots
 
@@ -715,14 +719,14 @@ phyloseq.birth.study <- subset_samples(phyloseq.dogs, birthstudy == "yes")
 
 #from here, you can use the puppies_mode_of_delivery column for comparison
 
-sample_data(phyloseq.birth.study)
+
 ```
 
-# Section 9: Statistical Analyses on Beta-Diversity
+# Section 9: Statistical Analyses for Beta-Diversity
 
-Our focus so far has been on visualization and qualitative observations. How do we actually statistically test differences in microbiome composition.
+Our focus so far has been on visualization and qualitative observations. How do we actually statistically test differences in microbiome composition between groups?
 
-PERMANOVA tests whether microbiome composition differs among groups using a distance matrix, such as Bray–Curtis dissimilarity. PERMANOVA asks whether your metadata group labels (ie **diet**, **age group**, birth mode) are significantly associated with differences in the overall microbiome composition that are larger than you would see if the labels were assigned randomly.
+PERMANOVA tests whether microbiome composition differs among groups using a distance matrix, such as Bray–Curtis dissimilarity. PERMANOVA asks whether the metadata group labels (ie **diet**, **age group**, birth mode) are associated with differences in the overall microbiome composition that are larger than you would see if the labels were assigned randomly.
 
 Imagine coloured labels placed on points in a PCoA plot:
 
