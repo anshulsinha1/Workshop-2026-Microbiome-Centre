@@ -82,9 +82,16 @@ number_of_samples
 # 2. Parentheses ()
 # 3. An input inside the parentheses, called an "argument"
 
-# For example, the () function combines several values into one vector (ordered collection of values):
+# For example, the c() function combines several values into one vector:
+
 
 sample_ids <- c("Sample_01", "Sample_02", "Sample_03")
+#Quotation marks tell R to treat Sample_01, Sample_02, and Sample_03 as literal text labels. Without quotation marks, R would interpret them as object names and try to find variables with those names.
+
+#Ie the following would give an error
+
+# sample_ids <- c(Sample_01, "Sample_02", "Sample_03")
+
 
 
 # Type the variable name and run the line to view its contents:
@@ -96,13 +103,6 @@ sample_ids
 # The length() function counts the number of values in an object:
 
 length(sample_ids)
-
-
-
-# If you are unsure what a certain function does, and what argument it takes, you can put a "?" before the function and run that to bring up the documentation 
-
-?length
-
 ```
 
 ```{r}
@@ -142,6 +142,16 @@ phyloseq.dogs <-  readRDS("/Users/anshulsinha/Desktop/microbiome_center/centre-s
 #If using posit.cloud, run the following: 
 
 #phyloseq.dogs <- readRDS("/cloud/project/R_material/dogs_phyloseq.rds")
+
+
+# Now work through the next section on the website: https://anshulsinha1.github.io/Workshop-2026-Microbiome-Centre/tutorial.html#section-2-characterizing-the-dataset-and-phyloseq-object
+
+# Copy and paste the code into new chunks and run yourself 
+
+# Answer the questions listed
+
+# We will reconvene after each section to go over the answers 
+
 
 ```
 
@@ -212,6 +222,9 @@ unique(phyloseq.dogs.tax.table$phylum)
 
 #you can add the "length" function to give the number of unique phyla 
 length(unique(phyloseq.dogs.tax.table$phylum))
+length(unique(phyloseq.dogs.tax.table$family))
+
+length(unique(phyloseq.dogs.tax.table$genus))
 
 ```
 
@@ -230,10 +243,13 @@ phyloseq.dogs.metadata <- as.data.frame(sample_data(phyloseq.dogs))
 #Start to think about what might categories might be interesting to test their associations with the microbiome
 
 
+length(unique(phyloseq.dogs.metadata$host_subject_id)) # 88 
+length(unique(phyloseq.dogs.metadata$host_diet_group)) #8
+
 
 ```
 
-**How many unique dogs do we have?**
+**How many unique dogs do we have? (This info is found in the "host_subject_id" category)**
 
 **diet groups?**
 
@@ -252,7 +268,7 @@ phyloseq.dogs.puppies <- subset_samples(phyloseq.dogs, host_life_stage == "puppy
 
 **how many puppy samples are there?**
 
-**Try subsetting the phyloseq object in different ways on different metadata categories**
+**Try subsetting the phyloseq object on a different metadata category**
 
 **Confirm this worked by checking the metadata file from the phyloseq object**
 
@@ -354,13 +370,15 @@ phyloseq.dogs.metadata.puppies <- as.data.frame(sample_data(phyloseq.dogs.puppie
 
 ```
 
-**Are there metadata categories that seem to influence puppy microbiome composition more than others? Try to identify some species that are associated with a given group**
+**Are there metadata categories that seem to influence puppy microbiome composition more than others? Focus on the categories "host_sex", "host_age_group", and "host_diet_group" for now**
+
+**Try to identify some species that are associated with a given group**
 
 **Compare the effects of the host_diet_group and host_age_group. Is there anything interesting that you notice?**
 
 **Since this is a longitudinal dataset, it may be interesting to follow the composition of a single dog over time. See if you can do this with the dog id "DMD_E_Rozsaszin". Note: you'll need to use the "host_subject_id" metadata column**
 
-**Pick a different host_subject_id to test this with. Does it's microbiome change in a similar fashion to "DMD_E_Rozsazin"?**
+**Optional: Compare the microbiome composition over time of the "DMD_E_Rozsaszin" dog with the "PP_K_Lila". What is similar, what is different**
 
 # Section 4: Normalizing Sequencing Depth using Rarefaction
 
@@ -413,24 +431,19 @@ hist(lib_sizes,breaks = 50)
 
 
 
-hist(
-  lib_sizes,
-  breaks = 30,
-  xlab = "Total reads per sample",
-  col = "lightblue",
-  border = "white"
-)
 
 
 ```
 
-Now, let's build a rarefaction curve to see if we've sequenced enough
+**Assess the variability of sequencing depth in the dataset**
+
+**Now, let's build a rarefaction curve to see if we've sequenced enough**
 
 ```{r}
 #| results: hide    
 
 #First let's get a matrix from our phyloseq object
-#We are using "t" to transpose the rows and columns (rarecurve takes the taxa and abundance in opposite oritentation to phyloseq)
+#We are using "t" to transpose the rows and columns (rarecurve takes the taxa and abundance in opposite orientation to phyloseq)
 
 matrix.phyloseq.dogs.puppies <- as(t(otu_table(phyloseq.dogs.puppies)), "matrix")
 
@@ -486,7 +499,7 @@ rarefied.phyloseq.puppies <- rarefy_even_depth(phyloseq.dogs.puppies, sample.siz
 #characterizing alpha diversity is quite easy with the phyloseq package
 
 
-#the estimate_richness function will give a dataframe of various measures of alpha diversity for each sample 
+#the estimate_richness function will give a dataframe of samples as rows and various measures of alpha diversity for each sample as columns
 
 #remember that some alpha diversity measures like Shannon and Simpons combine both eveness and richness 
 
@@ -497,9 +510,14 @@ estimate_richness(rarefied.phyloseq.puppies)
 
 ```
 
+**Take a look at some of the metrics that the function generates.**
+
 **What does "Observed" refer to here?**
 
 ```{r}
+#| results: hide    
+#| warning: false
+
 #If we want to visualize alpha diversity, we can use the plot_richness function, which works in a similar fashion 
 
 plot_richness(rarefied.phyloseq.puppies)
@@ -513,7 +531,7 @@ plot_richness(rarefied.phyloseq.puppies)
 plot_richness(rarefied.phyloseq.puppies, measures=c("Observed"))
 
 #Still not super informative 
-#Let's define our x-axis to a specific metadata category? 
+#Let's define our x-axis to a specific metadata category
 
 
 #Let's see if Kennel dictates richness at all
@@ -528,11 +546,27 @@ plot_richness(rarefied.phyloseq.puppies, x="kennel", measures=c("Observed")) +
 
 **See how richness, Shannon, and Simpson diversity are impacted by host age**
 
+**Does these trends of alpha diversity on age make sense ?**
+
 **Do the trends in alpha diversity differ depending on the metric used?**
 
-**Think about what biological relevance this has?**
+**We can also plot age as a continuous variable rather than a categorial variable (host_age_group). We can do this by using the "host_age_weeks" column instead. See at what age does richness plateau in the puppies. Remove the "+ geom_boxplot" for better visualization**
 
-**In the paper that describes this dataset, they find that the physiological state of the mother (Ie- pregnancy stage and lactation) has an impact on alpha diversity. Can you determine at which stages do mothers have a reduction in alpha diversity?**
+**Optional: In the paper that describes this dataset, they find that the physiological state of the mother (Ie- pregnancy stage and lactation) has an impact on alpha diversity. Can you determine at which stages do mothers have a reduction in alpha diversity (see below for a headstart)?**
+
+```{r}
+#Since we no longer want to work with just the puppies,we will need to go back to the original phyloseq object 
+
+#The physiological state of the mother is indicated by the column: "mother_physiological_state_category"
+
+
+#In the metadata, samples that don't apply to the mothers' physiological state (Ie- puppy samples) are labelled "Not Applicable"
+
+#We can use subset_samples and get columns that ARE NOT "Not Applicable". The "!" operator does this
+
+phyloseq.moms <- subset_samples(phyloseq.dogs, mother_physiological_state_category != "Not Applicable")
+
+```
 
 # Section 6: Beta-Diversity
 
@@ -615,9 +649,9 @@ plot_ordination(rarefied.phyloseq.puppies, pcoa.ord.bray.puppies, color = "host_
 
 -   **Try colouring the points of the PCoA by host age group. What do you see?**
 
--   **Try making a PCoA plot using jaccard distance instead of Bray and compare. Qualitatively, which distance metric yields higher differences between the groups. Why would this be the case?**
+-   **Try making a PCoA plot using jaccard distance instead of bray and compare host age group again. Does this agree with the PCoA you made using bray?**
 
--   **You've been asked by the canine diet manufacturer that provides the diet in this study to test whether their "HPLC-puppy" and "MPHC-puppy" diets have different impacts on the gut microbiome of puppies. Using PCoA show whether there are differences between these diets (see below for a headstart)? Are any potential differences dependent on other metadata categories\
+-   **You've been asked by the canine diet manufacturer that provides the diet in this study to test whether their "HPLC-puppy" and "MPHC-puppy" diets have different impacts on the gut microbiome of puppies. Using PCoAs show whether there are differences between these diets (see below for a headstart)? Are any potential differences dependent on other metadata categories\
     **
 
     ```{r}
@@ -660,6 +694,8 @@ ord_explore(rarefied.phyloseq.puppies)
 
 
 ```
+
+**Make sure to press the stop button at the top of your chunk when you are done to stop it from running**
 
 # Section 8: Putting it All Together
 
