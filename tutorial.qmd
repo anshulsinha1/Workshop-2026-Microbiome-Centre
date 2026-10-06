@@ -354,58 +354,13 @@ phyloseq.dogs.metadata.puppies <- as.data.frame(sample_data(phyloseq.dogs.puppie
 
 ```
 
-**Are there metadata categories that seem to influence puppy microbiome composition more than others?**
+**Are there metadata categories that seem to influence puppy microbiome composition more than others? Try to identify some species that are associated with a given group**
 
-**Try to identify some species that are associated with a given group**
+**Compare the effects of the host_diet_group and host_age_group. Is there anything interesting that you notice?**
 
 **Since this is a longitudinal dataset, it may be interesting to follow the composition of a single dog over time. See if you can do this with the dog id "DMD_E_Rozsaszin". Note: you'll need to use the "host_subject_id" metadata column**
 
-# Optional Section 3.1: Plotting individual taxa
-
-```{r}
-#Now that we've identified some taxa of interest, we can try plotting them individually to get a more clear look at their dynamics 
-
-#Let's plot how E. coli changes over age group 
-
-#We can use the tax_transform function to change our phyloseq object and normalize it using relative abundance and get our phyloseq object at the species level
-
-#it takes the phyloseq object as an argument, the "compositional" string to indicate we are transforming to get a relative abundance phyloseq object, and rank to do this at the genus level 
-
-phyloseq.dogs.puppies.relab.genus <- tax_transform(fixed.physeq.puppy, "compositional", rank = "genus") #
-
-
-# lets turn this back into a phyloseq object using the ps_get function
-
-phyloseq.dogs.puppies.relab.genus.ps <- ps_get(phyloseq.dogs.puppies.relab.genus) #returns a phyloseq object 
-
-
-#now we can add the relative abundance of Escherichia to the sample data as a column using ps_otu2samdat
-
-phyloseq.dogs.puppies.relab.genus.ps.escherichia <- ps_otu2samdat(phyloseq.dogs.puppies.relab.genus.ps, "Escherichia") 
-
-
-#now we can make a table with its abundance 
-phyloseq.dogs.puppies.relab.genus.ps.escherichia.table <-   samdat_tbl(phyloseq.dogs.puppies.relab.genus.ps.escherichia)
-
-#You can see there is a column called Escherichia with the relative abundance of Escherichia in every sample 
-
-
-
-#Now we can use ggplot2 to plot the abundance of this species 
-#ggplot2 takes our table as an argument, and then asks for our x and y-axes in the aes function 
-
-# we can specify we want this to be a boxplot using geom_boxplot
-# we can specify that we want to add individual points with geom jitter
-ggplot(phyloseq.dogs.puppies.relab.genus.ps.escherichia.table
-, aes(x = host_age_group, y = Escherichia, colour = host_age_group)) +
-  geom_boxplot(width = 0.5, colour = "grey", outlier.shape = NA) +
-  geom_jitter(width = 0.2, alpha = 0.5) 
-
-
-
-```
-
-Give this a try with another bacterial genus!
+**Pick a different host_subject_id to test this with. Does it's microbiome change in a similar fashion to "DMD_E_Rozsazin"?**
 
 # Section 4: Normalizing Sequencing Depth using Rarefaction
 
@@ -569,30 +524,15 @@ plot_richness(rarefied.phyloseq.puppies, x="kennel", measures=c("Observed")) +
 
 ```
 
-In the earlier section, we saw that host age group had a strong effect on microbiome composition
+**In the earlier section, we saw that host age group had a strong effect on microbiome composition**
 
 **See how richness, Shannon, and Simpson diversity are impacted by host age**
 
 **Do the trends in alpha diversity differ depending on the metric used?**
 
-**In the paper that describes this dataset, they find that the physiological state of the mother (Ie- pregnancy stage and lactation) has an impact on alpha diversity**
+**Think about what biological relevance this has?**
 
-**Can you determine which at which stages do mothers have a reduction in alpha diversity?**
-
-```{r}
-#Since we no longer want to work with just the puppies,we will need to go back to the original phyloseq object 
-
-#The physiological state of the mother is indicated by the column: "mother_physiological_state_category"
-
-
-#In the metadata, samples that don't apply to the mothers' physiological state (Ie- puppy samples) are labelled "Not Applicable"
-
-#We can use subset_samples and get columns that ARE NOT "Not Applicable". The "!" operator does this
-
-phyloseq.moms <- subset_samples(phyloseq.dogs, mother_physiological_state_category != "Not Applicable")
-
-#Now determine how alpha diversity is impacted by the physiological state category 
-```
+**In the paper that describes this dataset, they find that the physiological state of the mother (Ie- pregnancy stage and lactation) has an impact on alpha diversity. Can you determine at which stages do mothers have a reduction in alpha diversity?**
 
 # Section 6: Beta-Diversity
 
@@ -659,12 +599,14 @@ pcoa.ord.bray.puppies <- phyloseq::ordinate(rarefied.phyloseq.puppies, method ="
 plot_ordination(rarefied.phyloseq.puppies, pcoa.ord.bray.puppies)
 
 
-#And we can colour our points by using the colour argument  (ie- by kennel and diet group)
-
-
+#And we can colour our points by using the colour argument  (ie- by kennel )
 plot_ordination(rarefied.phyloseq.puppies, pcoa.ord.bray.puppies, color = "kennel")
 
-plot_ordination(rarefied.phyloseq.puppies, pcoa.ord.bray.puppies, color = "host_diet_group")
+
+
+#We can also see how multiple categories are distributed by adding the "shape" argument
+plot_ordination(rarefied.phyloseq.puppies, pcoa.ord.bray.puppies, color = "host_sex", shape = "kennel")
+
 
 
 ```
@@ -674,6 +616,19 @@ plot_ordination(rarefied.phyloseq.puppies, pcoa.ord.bray.puppies, color = "host_
 -   **Try colouring the points of the PCoA by host age group. What do you see?**
 
 -   **Try making a PCoA plot using jaccard distance instead of Bray and compare. Qualitatively, which distance metric yields higher differences between the groups. Why would this be the case?**
+
+-   **You've been asked by the canine diet manufacturer that provides the diet in this study to test whether their "HPLC-puppy" and "MPHC-puppy" diets have different impacts on the gut microbiome of puppies. Using PCoA show whether there are differences between these diets (see below for a headstart)? Are any potential differences dependent on other metadata categories\
+    **
+
+    ```{r}
+    #Since all we care about is the HPLC and MPHC diets, we can just subset for these
+    # The "|" is an "or" operator, meaning we are only taking samples that belong to either the HPLC or MPHC groups 
+
+    phyloseq.dogs.puppies.HP.MP <- subset_samples(phyloseq.dogs, host_diet_group == "HPLC-puppy" | host_diet_group == "MPHC-puppy")
+
+    #remeber to rarefy this!!
+
+    ```
 
 # Section 7: Interactive Ordination Plots
 
@@ -710,11 +665,14 @@ ord_explore(rarefied.phyloseq.puppies)
 
 In the publication that uses this dataset, they have a small subset of data, where puppies from two litters from the same dam, one born vaginally, and one by cesarean section were compared. They were diet and age-matched.
 
-Using what we've learned so far, use bar plots, alpha, and beta-diversity approaches to compare the puppies born vaginally and by cesearean section.
+**Using what we've learned so far, use bar plots, alpha, and beta-diversity approaches to compare the puppies born vaginally and by cesearean section.**
+
+**Do all these methods suggest that the groups are different from each other to some degree?**
 
 ```{r}
 #To access these samples, we need to get a phyloseq object of samples from this birth study
-sample_data(phyloseq.dogs)
+
+
 phyloseq.birth.study <- subset_samples(phyloseq.dogs, birthstudy == "yes")
 
 #from here, you can use the puppies_mode_of_delivery column for comparison
@@ -722,7 +680,54 @@ phyloseq.birth.study <- subset_samples(phyloseq.dogs, birthstudy == "yes")
 
 ```
 
-# Section 9: Statistical Analyses for Beta-Diversity
+# Optional Section 3.1: Plotting individual taxa
+
+```{r}
+#Now that we've identified some taxa of interest, we can try plotting them individually to get a more clear look at their dynamics 
+
+#Let's plot how E. coli changes over age group 
+
+#We can use the tax_transform function to change our phyloseq object and normalize it using relative abundance and get our phyloseq object at the species level
+
+#it takes the phyloseq object as an argument, the "compositional" string to indicate we are transforming to get a relative abundance phyloseq object, and rank to do this at the genus level 
+
+phyloseq.dogs.puppies.relab.genus <- tax_transform(fixed.physeq.puppy, "compositional", rank = "genus") #
+
+
+# lets turn this back into a phyloseq object using the ps_get function
+
+phyloseq.dogs.puppies.relab.genus.ps <- ps_get(phyloseq.dogs.puppies.relab.genus) #returns a phyloseq object 
+
+
+#now we can add the relative abundance of Escherichia to the sample data as a column using ps_otu2samdat
+
+phyloseq.dogs.puppies.relab.genus.ps.escherichia <- ps_otu2samdat(phyloseq.dogs.puppies.relab.genus.ps, "Escherichia") 
+
+
+#now we can make a table with its abundance 
+phyloseq.dogs.puppies.relab.genus.ps.escherichia.table <-   samdat_tbl(phyloseq.dogs.puppies.relab.genus.ps.escherichia)
+
+#You can see there is a column called Escherichia with the relative abundance of Escherichia in every sample 
+
+
+
+#Now we can use ggplot2 to plot the abundance of this species 
+#ggplot2 takes our table as an argument, and then asks for our x and y-axes in the aes function 
+
+# we can specify we want this to be a boxplot using geom_boxplot
+# we can specify that we want to add individual points with geom jitter
+ggplot(phyloseq.dogs.puppies.relab.genus.ps.escherichia.table
+, aes(x = host_age_group, y = Escherichia, colour = host_age_group)) +
+  geom_boxplot(width = 0.5, colour = "grey", outlier.shape = NA) +
+  geom_jitter(width = 0.2, alpha = 0.5) 
+
+
+
+```
+
+**Give this a try with another bacterial genus and or metadata category**
+
+# Optional Section 9. 1: Statistical Analyses for Beta-Diversity
 
 Our focus so far has been on visualization and qualitative observations. How do we actually statistically test differences in microbiome composition between groups?
 
@@ -733,6 +738,8 @@ Imagine coloured labels placed on points in a PCoA plot:
 -   If red, green, blue, and purple labels are scattered randomly throughout the plot, shuffling their labels should not change the degree of apparent group separation much.
 
 -   If samples of the same colour cluster or occupy different areas of the ordination, the true labels produce greater group-associated structure than random shuffles.
+
+A simplification of this idea is that PERMANOVA essentially tests whether the variation between groups is larger than the variation within groups
 
 -   Let's test this using the birth study as an example
 
@@ -762,3 +769,7 @@ adonis2(bray.distance.puppies.birthstudy ~ puppies_mode_of_delivery, data = meta
 Here, we can see the output of the adonis test. The two important columns for us are the p-value column, which tells us that the delivery mode does have a significant effect on microbiome composition! The R2 column tells us what proportion of total variance of the data is explained by a certain factor (delivery mode) in this case.
 
 **See if the sex of the puppies has a significant effect on composition. Is the effect larger or smaller than delivery mode?**
+
+Note that if we technically wanted to properly test the effect of things like diet, age_group on the composition of the puppies, we would need to account for repeated sampling. This is outside the scope of this workshop, but if you're interested in this, there is some useful discussion here on this topic: <https://uw.pressbooks.pub/appliedmultivariatestatistics/chapter/restricting-permutations/>
+
+**For the meantime, using the "phyloseq.puppies" phyloseq object, and using adonis2, get a rough sense of which factors impact beta-diversity the most (with the caveat that we would need to go back and properly account for repeated measures to properly do this)**
