@@ -838,7 +838,7 @@ ggplot(merged_df_abundance, aes(x = Rank, y = Mean_Relative_Abundance)) +
 
 **What does this distribution tell us?**
 
-We can also do this with species prevalence: In what proportion of samples is a species found
+**We can also do this with species prevalence: In what proportion of samples is a species found**
 
 ```{r}
 # Number of samples in which each species is detected
@@ -878,7 +878,9 @@ merged_df_prevalence$Prevalence_Rank <- seq_len(
 )
 ```
 
-**Compare the distribution of species with prevalence. Are there species that are abundant and not prevalent or vice-versa?**
+**Take a look at the species that are most prevalent**
+
+**Are they the same ones that are abundant?**
 
 # Optional Section 9. 1: Statistical Analyses for Beta-Diversity
 

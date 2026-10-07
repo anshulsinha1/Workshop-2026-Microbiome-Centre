@@ -922,7 +922,7 @@ FALSE): most observed count data have counts 1, but smallest count is 10</code><
 </div>
 </div>
 <p><strong>What does this distribution tell us?</strong></p>
-<p>We can also do this with species prevalence: In what proportion of samples is a species found</p>
+<p><strong>We can also do this with species prevalence: In what proportion of samples is a species found</strong></p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb42"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Number of samples in which each species is detected</span></span>
 <span id="cb42-2"><a href="#cb42-2" aria-hidden="true" tabindex="-1"></a>prevalence <span class="ot">&lt;-</span> <span class="fu">apply</span>(</span>
@@ -960,7 +960,8 @@ FALSE): most observed count data have counts 1, but smallest count is 10</code><
 <span id="cb42-34"><a href="#cb42-34" aria-hidden="true" tabindex="-1"></a>  <span class="fu">nrow</span>(merged_df_prevalence)</span>
 <span id="cb42-35"><a href="#cb42-35" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
-<p><strong>Compare the distribution of species with prevalence. Are there species that are abundant and not prevalent or vice-versa?</strong></p>
+<p><strong>Take a look at the species that are most prevalent</strong></p>
+<p><strong>Are they the same ones that are abundant?</strong></p>
 </section>
 <section id="optional-section-9.-1-statistical-analyses-for-beta-diversity" class="level1">
 <h1>Optional Section 9. 1: Statistical Analyses for Beta-Diversity</h1>
@@ -988,7 +989,7 @@ See `?set.seed`</code></pre>
 <pre><code>...</code></pre>
 </div>
 <div class="cell-output cell-output-stderr">
-<pre><code>1207OTUs were removed because they are no longer 
+<pre><code>1206OTUs were removed because they are no longer 
 present in any sample after random subsampling</code></pre>
 </div>
 <div class="cell-output cell-output-stderr">
@@ -1012,9 +1013,9 @@ Number of permutations: 999
 
 adonis2(formula = bray.distance.puppies.birthstudy ~ puppies_mode_of_delivery, data = meta.birth)
          Df SumOfSqs      R2      F Pr(&gt;F)    
-Model     1   0.4912 0.31107 6.7729  0.001 ***
-Residual 15   1.0879 0.68893                  
-Total    16   1.5791 1.00000                  
+Model     1  0.49286 0.31173 6.7939  0.001 ***
+Residual 15  1.08818 0.68827                  
+Total    16  1.58104 1.00000                  
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 </div>
