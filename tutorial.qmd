@@ -380,6 +380,8 @@ phyloseq.dogs.metadata.puppies <- as.data.frame(sample_data(phyloseq.dogs.puppie
 
 **Optional: Compare the microbiome composition over time of the "DMD_E_Rozsaszin" dog with the "PP_K_Lila". What is similar, what is different**
 
+**Optional: Go through sections 3.1 and 3.2**
+
 # Section 4: Normalizing Sequencing Depth using Rarefaction
 
 -   While our bar plots have given us some nice qualitative measures of the community composition, can we assess changes in a more quantitative way?
@@ -795,6 +797,10 @@ abundance_df <- data.frame(
 )
 
 # Step 5: Merge with taxonomy
+# Extract the taxonomy table from the phyloseq object
+tax_df <- as.data.frame(tax_table(phyloseq.dogs))
+
+
 merged_df_abundance <- merge(
   abundance_df,
   tax_df,

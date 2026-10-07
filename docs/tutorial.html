@@ -168,6 +168,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#section-7-interactive-ordination-plots" id="toc-section-7-interactive-ordination-plots" class="nav-link" data-scroll-target="#section-7-interactive-ordination-plots">Section 7: Interactive Ordination Plots</a></li>
   <li><a href="#section-8-putting-it-all-together" id="toc-section-8-putting-it-all-together" class="nav-link" data-scroll-target="#section-8-putting-it-all-together">Section 8: Putting it All Together</a></li>
   <li><a href="#optional-section-3.1-plotting-individual-taxa" id="toc-optional-section-3.1-plotting-individual-taxa" class="nav-link" data-scroll-target="#optional-section-3.1-plotting-individual-taxa">Optional Section 3.1: Plotting individual taxa</a></li>
+  <li><a href="#optional-section-3.2-plotting-ranked-abundance" id="toc-optional-section-3.2-plotting-ranked-abundance" class="nav-link" data-scroll-target="#optional-section-3.2-plotting-ranked-abundance">Optional Section 3.2: Plotting ranked abundance</a></li>
   <li><a href="#optional-section-9.-1-statistical-analyses-for-beta-diversity" id="toc-optional-section-9.-1-statistical-analyses-for-beta-diversity" class="nav-link" data-scroll-target="#optional-section-9.-1-statistical-analyses-for-beta-diversity">Optional Section 9. 1: Statistical Analyses for Beta-Diversity</a></li>
   </ul>
 </nav>
@@ -500,6 +501,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p><strong>Compare the effects of the host_diet_group and host_age_group. Is there anything interesting that you notice?</strong></p>
 <p><strong>Since this is a longitudinal dataset, it may be interesting to follow the composition of a single dog over time. See if you can do this with the dog id “DMD_E_Rozsaszin”. Note: you’ll need to use the “host_subject_id” metadata column</strong></p>
 <p><strong>Optional: Compare the microbiome composition over time of the “DMD_E_Rozsaszin” dog with the “PP_K_Lila”. What is similar, what is different</strong></p>
+<p><strong>Optional: Go through sections 3.1 and 3.2</strong></p>
 </section>
 <section id="section-4-normalizing-sequencing-depth-using-rarefaction" class="level1">
 <h1>Section 4: Normalizing Sequencing Depth using Rarefaction</h1>
@@ -849,6 +851,117 @@ FALSE): most observed count data have counts 1, but smallest count is 10</code><
 </div>
 <p><strong>Give this a try with another bacterial genus and or metadata category</strong></p>
 </section>
+<section id="optional-section-3.2-plotting-ranked-abundance" class="level1">
+<h1>Optional Section 3.2: Plotting ranked abundance</h1>
+<ul>
+<li><p>One thing that could be useful is to see a ranked distribution of the species in your dataset</p></li>
+<li><p>This will give you an idea of what species are most dominant across your samples</p></li>
+<li><p>To get a dataframe that gives us a rank distribution of species by abundance we can do the following</p></li>
+</ul>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb40"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Step 1: Transform the phyloseq object to get relative abundance info for each species using the "transform_sample_counts" function</span></span>
+<span id="cb40-2"><a href="#cb40-2" aria-hidden="true" tabindex="-1"></a><span class="co">#Now we have a phyloseq object that has relative abundance counts instead of "raw counts"</span></span>
+<span id="cb40-3"><a href="#cb40-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-4"><a href="#cb40-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Step 1: Convert each sample to relative abundance</span></span>
+<span id="cb40-5"><a href="#cb40-5" aria-hidden="true" tabindex="-1"></a>physeq_rel <span class="ot">&lt;-</span> <span class="fu">transform_sample_counts</span>(</span>
+<span id="cb40-6"><a href="#cb40-6" aria-hidden="true" tabindex="-1"></a>  phyloseq.dogs,</span>
+<span id="cb40-7"><a href="#cb40-7" aria-hidden="true" tabindex="-1"></a>  <span class="cf">function</span>(x) x <span class="sc">/</span> <span class="fu">sum</span>(x)</span>
+<span id="cb40-8"><a href="#cb40-8" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb40-9"><a href="#cb40-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-10"><a href="#cb40-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Step 2: Sum relative abundance across samples for each species</span></span>
+<span id="cb40-11"><a href="#cb40-11" aria-hidden="true" tabindex="-1"></a>taxa_abundance <span class="ot">&lt;-</span> <span class="fu">taxa_sums</span>(physeq_rel)</span>
+<span id="cb40-12"><a href="#cb40-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-13"><a href="#cb40-13" aria-hidden="true" tabindex="-1"></a><span class="co"># Step 3: Convert the summed abundance to mean relative abundance</span></span>
+<span id="cb40-14"><a href="#cb40-14" aria-hidden="true" tabindex="-1"></a>mean_rel_abundance <span class="ot">&lt;-</span> taxa_abundance <span class="sc">/</span> <span class="fu">nsamples</span>(physeq_rel)</span>
+<span id="cb40-15"><a href="#cb40-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-16"><a href="#cb40-16" aria-hidden="true" tabindex="-1"></a><span class="co"># Step 4: Create a data frame</span></span>
+<span id="cb40-17"><a href="#cb40-17" aria-hidden="true" tabindex="-1"></a>abundance_df <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb40-18"><a href="#cb40-18" aria-hidden="true" tabindex="-1"></a>  <span class="at">species =</span> <span class="fu">names</span>(mean_rel_abundance),</span>
+<span id="cb40-19"><a href="#cb40-19" aria-hidden="true" tabindex="-1"></a>  <span class="at">Mean_Relative_Abundance =</span> mean_rel_abundance,</span>
+<span id="cb40-20"><a href="#cb40-20" aria-hidden="true" tabindex="-1"></a>  <span class="at">row.names =</span> <span class="cn">NULL</span></span>
+<span id="cb40-21"><a href="#cb40-21" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb40-22"><a href="#cb40-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-23"><a href="#cb40-23" aria-hidden="true" tabindex="-1"></a><span class="co"># Step 5: Merge with taxonomy</span></span>
+<span id="cb40-24"><a href="#cb40-24" aria-hidden="true" tabindex="-1"></a><span class="co"># Extract the taxonomy table from the phyloseq object</span></span>
+<span id="cb40-25"><a href="#cb40-25" aria-hidden="true" tabindex="-1"></a>tax_df <span class="ot">&lt;-</span> <span class="fu">as.data.frame</span>(<span class="fu">tax_table</span>(phyloseq.dogs))</span>
+<span id="cb40-26"><a href="#cb40-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-27"><a href="#cb40-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-28"><a href="#cb40-28" aria-hidden="true" tabindex="-1"></a>merged_df_abundance <span class="ot">&lt;-</span> <span class="fu">merge</span>(</span>
+<span id="cb40-29"><a href="#cb40-29" aria-hidden="true" tabindex="-1"></a>  abundance_df,</span>
+<span id="cb40-30"><a href="#cb40-30" aria-hidden="true" tabindex="-1"></a>  tax_df,</span>
+<span id="cb40-31"><a href="#cb40-31" aria-hidden="true" tabindex="-1"></a>  <span class="at">by.x =</span> <span class="st">"species"</span>,</span>
+<span id="cb40-32"><a href="#cb40-32" aria-hidden="true" tabindex="-1"></a>  <span class="at">by.y =</span> <span class="st">"row.names"</span>,</span>
+<span id="cb40-33"><a href="#cb40-33" aria-hidden="true" tabindex="-1"></a>  <span class="at">all.x =</span> <span class="cn">TRUE</span></span>
+<span id="cb40-34"><a href="#cb40-34" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb40-35"><a href="#cb40-35" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-36"><a href="#cb40-36" aria-hidden="true" tabindex="-1"></a><span class="co"># Step 6: Rank by mean relative abundance</span></span>
+<span id="cb40-37"><a href="#cb40-37" aria-hidden="true" tabindex="-1"></a>merged_df_abundance <span class="ot">&lt;-</span> merged_df_abundance[</span>
+<span id="cb40-38"><a href="#cb40-38" aria-hidden="true" tabindex="-1"></a>  <span class="fu">order</span>(<span class="sc">-</span>merged_df_abundance<span class="sc">$</span>Mean_Relative_Abundance),</span>
+<span id="cb40-39"><a href="#cb40-39" aria-hidden="true" tabindex="-1"></a>]</span>
+<span id="cb40-40"><a href="#cb40-40" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-41"><a href="#cb40-41" aria-hidden="true" tabindex="-1"></a>merged_df_abundance<span class="sc">$</span>Rank <span class="ot">&lt;-</span> <span class="fu">seq_len</span>(<span class="fu">nrow</span>(merged_df_abundance))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p><strong>What are the most abundant species in the dataset?</strong></p>
+<p>Let’s make a Whittaker plot, which plots the abundance of species in the dataset ordered by rank. These can give us an idea of the abundance distribution and how many species are dominant vs.&nbsp;low abundance. We can plot our distribution by doing the following:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb41"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(merged_df_abundance, <span class="fu">aes</span>(<span class="at">x =</span> Rank, <span class="at">y =</span> Mean_Relative_Abundance)) <span class="sc">+</span></span>
+<span id="cb41-2"><a href="#cb41-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>() <span class="sc">+</span></span>
+<span id="cb41-3"><a href="#cb41-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span></span>
+<span id="cb41-4"><a href="#cb41-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb41-5"><a href="#cb41-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Rank-Abundance Curve"</span>,</span>
+<span id="cb41-6"><a href="#cb41-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"Rank"</span>,</span>
+<span id="cb41-7"><a href="#cb41-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"Relative Abundance"</span></span>
+<span id="cb41-8"><a href="#cb41-8" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb41-9"><a href="#cb41-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="tutorial_files/figure-html/unnamed-chunk-30-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p><strong>What does this distribution tell us?</strong></p>
+<p>We can also do this with species prevalence: In what proportion of samples is a species found</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb42"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Number of samples in which each species is detected</span></span>
+<span id="cb42-2"><a href="#cb42-2" aria-hidden="true" tabindex="-1"></a>prevalence <span class="ot">&lt;-</span> <span class="fu">apply</span>(</span>
+<span id="cb42-3"><a href="#cb42-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">X =</span> <span class="fu">otu_table</span>(phyloseq.dogs),</span>
+<span id="cb42-4"><a href="#cb42-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">MARGIN =</span> <span class="fu">ifelse</span>(<span class="fu">taxa_are_rows</span>(phyloseq.dogs), <span class="dv">1</span>, <span class="dv">2</span>),</span>
+<span id="cb42-5"><a href="#cb42-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">FUN =</span> <span class="cf">function</span>(x) <span class="fu">sum</span>(x <span class="sc">&gt;</span> <span class="dv">0</span>)</span>
+<span id="cb42-6"><a href="#cb42-6" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb42-7"><a href="#cb42-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb42-8"><a href="#cb42-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Convert counts to the proportion of samples in which each species is detected</span></span>
+<span id="cb42-9"><a href="#cb42-9" aria-hidden="true" tabindex="-1"></a>prevalence_prop <span class="ot">&lt;-</span> prevalence <span class="sc">/</span> <span class="fu">nsamples</span>(phyloseq.dogs)</span>
+<span id="cb42-10"><a href="#cb42-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb42-11"><a href="#cb42-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Convert to a data frame</span></span>
+<span id="cb42-12"><a href="#cb42-12" aria-hidden="true" tabindex="-1"></a>prevalence_df <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb42-13"><a href="#cb42-13" aria-hidden="true" tabindex="-1"></a>  <span class="at">species =</span> <span class="fu">names</span>(prevalence),</span>
+<span id="cb42-14"><a href="#cb42-14" aria-hidden="true" tabindex="-1"></a>  <span class="at">Prevalence_n =</span> prevalence,</span>
+<span id="cb42-15"><a href="#cb42-15" aria-hidden="true" tabindex="-1"></a>  <span class="at">Prevalence_prop =</span> prevalence_prop,</span>
+<span id="cb42-16"><a href="#cb42-16" aria-hidden="true" tabindex="-1"></a>  <span class="at">Prevalence_percent =</span> prevalence_prop <span class="sc">*</span> <span class="dv">100</span>,</span>
+<span id="cb42-17"><a href="#cb42-17" aria-hidden="true" tabindex="-1"></a>  <span class="at">row.names =</span> <span class="cn">NULL</span></span>
+<span id="cb42-18"><a href="#cb42-18" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb42-19"><a href="#cb42-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb42-20"><a href="#cb42-20" aria-hidden="true" tabindex="-1"></a>merged_df_prevalence <span class="ot">&lt;-</span> <span class="fu">merge</span>(</span>
+<span id="cb42-21"><a href="#cb42-21" aria-hidden="true" tabindex="-1"></a>  prevalence_df,</span>
+<span id="cb42-22"><a href="#cb42-22" aria-hidden="true" tabindex="-1"></a>  tax_df,</span>
+<span id="cb42-23"><a href="#cb42-23" aria-hidden="true" tabindex="-1"></a>  <span class="at">by.x =</span> <span class="st">"species"</span>,</span>
+<span id="cb42-24"><a href="#cb42-24" aria-hidden="true" tabindex="-1"></a>  <span class="at">by.y =</span> <span class="st">"row.names"</span>,</span>
+<span id="cb42-25"><a href="#cb42-25" aria-hidden="true" tabindex="-1"></a>  <span class="at">all.x =</span> <span class="cn">TRUE</span></span>
+<span id="cb42-26"><a href="#cb42-26" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb42-27"><a href="#cb42-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb42-28"><a href="#cb42-28" aria-hidden="true" tabindex="-1"></a><span class="co"># Rank from most to least prevalent</span></span>
+<span id="cb42-29"><a href="#cb42-29" aria-hidden="true" tabindex="-1"></a>merged_df_prevalence <span class="ot">&lt;-</span> merged_df_prevalence[</span>
+<span id="cb42-30"><a href="#cb42-30" aria-hidden="true" tabindex="-1"></a>  <span class="fu">order</span>(<span class="sc">-</span>merged_df_prevalence<span class="sc">$</span>Prevalence_prop),</span>
+<span id="cb42-31"><a href="#cb42-31" aria-hidden="true" tabindex="-1"></a>]</span>
+<span id="cb42-32"><a href="#cb42-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb42-33"><a href="#cb42-33" aria-hidden="true" tabindex="-1"></a>merged_df_prevalence<span class="sc">$</span>Prevalence_Rank <span class="ot">&lt;-</span> <span class="fu">seq_len</span>(</span>
+<span id="cb42-34"><a href="#cb42-34" aria-hidden="true" tabindex="-1"></a>  <span class="fu">nrow</span>(merged_df_prevalence)</span>
+<span id="cb42-35"><a href="#cb42-35" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p><strong>Compare the distribution of species with prevalence. Are there species that are abundant and not prevalent or vice-versa?</strong></p>
+</section>
 <section id="optional-section-9.-1-statistical-analyses-for-beta-diversity" class="level1">
 <h1>Optional Section 9. 1: Statistical Analyses for Beta-Diversity</h1>
 <p>Our focus so far has been on visualization and qualitative observations. How do we actually statistically test differences in microbiome composition between groups?</p>
@@ -863,9 +976,9 @@ FALSE): most observed count data have counts 1, but smallest count is 10</code><
 <li>Let’s test this using the birth study as an example</li>
 </ul>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb40"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a><span class="co">#Step 1: Create Distance Matrix From Rarefied Phyloseq Object</span></span>
-<span id="cb40-2"><a href="#cb40-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb40-3"><a href="#cb40-3" aria-hidden="true" tabindex="-1"></a>rarefied.phyloseq.birth.study <span class="ot">&lt;-</span> <span class="fu">rarefy_even_depth</span>(phyloseq.birth.study, <span class="at">sample.size =</span> <span class="fu">min</span>(<span class="fu">sample_sums</span>(phyloseq.birth.study)))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb43"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a><span class="co">#Step 1: Create Distance Matrix From Rarefied Phyloseq Object</span></span>
+<span id="cb43-2"><a href="#cb43-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-3"><a href="#cb43-3" aria-hidden="true" tabindex="-1"></a>rarefied.phyloseq.birth.study <span class="ot">&lt;-</span> <span class="fu">rarefy_even_depth</span>(phyloseq.birth.study, <span class="at">sample.size =</span> <span class="fu">min</span>(<span class="fu">sample_sums</span>(phyloseq.birth.study)))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>You set `rngseed` to FALSE. Make sure you've set &amp; recorded
  the random seed of your session for reproducibility.
@@ -875,23 +988,23 @@ See `?set.seed`</code></pre>
 <pre><code>...</code></pre>
 </div>
 <div class="cell-output cell-output-stderr">
-<pre><code>1206OTUs were removed because they are no longer 
+<pre><code>1207OTUs were removed because they are no longer 
 present in any sample after random subsampling</code></pre>
 </div>
 <div class="cell-output cell-output-stderr">
 <pre><code>...</code></pre>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb45"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a>bray.distance.puppies.birthstudy <span class="ot">&lt;-</span> phyloseq<span class="sc">::</span><span class="fu">distance</span>(rarefied.phyloseq.birth.study, <span class="at">method =</span> <span class="st">"bray"</span>)</span>
-<span id="cb45-2"><a href="#cb45-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb45-3"><a href="#cb45-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb45-4"><a href="#cb45-4" aria-hidden="true" tabindex="-1"></a><span class="co">#Step 2: Extract Metadata From the Phyloseq Object </span></span>
-<span id="cb45-5"><a href="#cb45-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb45-6"><a href="#cb45-6" aria-hidden="true" tabindex="-1"></a>meta.birth <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="fu">sample_data</span>(rarefied.phyloseq.birth.study))</span>
-<span id="cb45-7"><a href="#cb45-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb45-8"><a href="#cb45-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb45-9"><a href="#cb45-9" aria-hidden="true" tabindex="-1"></a><span class="co">#Step 3: Run the adonis2 function, which takes your distance matrix, your variable of interest, and the metadata as input </span></span>
-<span id="cb45-10"><a href="#cb45-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb45-11"><a href="#cb45-11" aria-hidden="true" tabindex="-1"></a><span class="fu">adonis2</span>(bray.distance.puppies.birthstudy <span class="sc">~</span> puppies_mode_of_delivery, <span class="at">data =</span> meta.birth)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb48"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a>bray.distance.puppies.birthstudy <span class="ot">&lt;-</span> phyloseq<span class="sc">::</span><span class="fu">distance</span>(rarefied.phyloseq.birth.study, <span class="at">method =</span> <span class="st">"bray"</span>)</span>
+<span id="cb48-2"><a href="#cb48-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb48-3"><a href="#cb48-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb48-4"><a href="#cb48-4" aria-hidden="true" tabindex="-1"></a><span class="co">#Step 2: Extract Metadata From the Phyloseq Object </span></span>
+<span id="cb48-5"><a href="#cb48-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb48-6"><a href="#cb48-6" aria-hidden="true" tabindex="-1"></a>meta.birth <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="fu">sample_data</span>(rarefied.phyloseq.birth.study))</span>
+<span id="cb48-7"><a href="#cb48-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb48-8"><a href="#cb48-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb48-9"><a href="#cb48-9" aria-hidden="true" tabindex="-1"></a><span class="co">#Step 3: Run the adonis2 function, which takes your distance matrix, your variable of interest, and the metadata as input </span></span>
+<span id="cb48-10"><a href="#cb48-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb48-11"><a href="#cb48-11" aria-hidden="true" tabindex="-1"></a><span class="fu">adonis2</span>(bray.distance.puppies.birthstudy <span class="sc">~</span> puppies_mode_of_delivery, <span class="at">data =</span> meta.birth)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Permutation test for adonis under reduced model
 Permutation: free
@@ -899,9 +1012,9 @@ Number of permutations: 999
 
 adonis2(formula = bray.distance.puppies.birthstudy ~ puppies_mode_of_delivery, data = meta.birth)
          Df SumOfSqs      R2      F Pr(&gt;F)    
-Model     1  0.49162 0.31124 6.7784  0.001 ***
-Residual 15  1.08793 0.68876                  
-Total    16  1.57955 1.00000                  
+Model     1   0.4912 0.31107 6.7729  0.001 ***
+Residual 15   1.0879 0.68893                  
+Total    16   1.5791 1.00000                  
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 </div>
