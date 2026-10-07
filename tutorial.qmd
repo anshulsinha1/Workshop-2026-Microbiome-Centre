@@ -763,6 +763,117 @@ ggplot(phyloseq.dogs.puppies.relab.genus.ps.escherichia.table
 
 **Give this a try with another bacterial genus and or metadata category**
 
+# Optional Section 3.2: Plotting ranked abundance
+
+-   One thing that could be useful is to see a ranked distribution of the species in your dataset
+
+-   This will give you an idea of what species are most dominant across your samples
+
+-   To get a dataframe that gives us a rank distribution of species by abundance we can do the following
+
+```{r}
+# Step 1: Transform the phyloseq object to get relative abundance info for each species using the "transform_sample_counts" function
+#Now we have a phyloseq object that has relative abundance counts instead of "raw counts"
+
+# Step 1: Convert each sample to relative abundance
+physeq_rel <- transform_sample_counts(
+  phyloseq.dogs,
+  function(x) x / sum(x)
+)
+
+# Step 2: Sum relative abundance across samples for each species
+taxa_abundance <- taxa_sums(physeq_rel)
+
+# Step 3: Convert the summed abundance to mean relative abundance
+mean_rel_abundance <- taxa_abundance / nsamples(physeq_rel)
+
+# Step 4: Create a data frame
+abundance_df <- data.frame(
+  species = names(mean_rel_abundance),
+  Mean_Relative_Abundance = mean_rel_abundance,
+  row.names = NULL
+)
+
+# Step 5: Merge with taxonomy
+merged_df_abundance <- merge(
+  abundance_df,
+  tax_df,
+  by.x = "species",
+  by.y = "row.names",
+  all.x = TRUE
+)
+
+# Step 6: Rank by mean relative abundance
+merged_df_abundance <- merged_df_abundance[
+  order(-merged_df_abundance$Mean_Relative_Abundance),
+]
+
+merged_df_abundance$Rank <- seq_len(nrow(merged_df_abundance))
+
+
+
+```
+
+**What are the most abundant species in the dataset?**
+
+Let’s make a Whittaker plot, which plots the abundance of species in the dataset ordered by rank. These can give us an idea of the abundance distribution and how many species are dominant vs. low abundance. We can plot our distribution by doing the following:
+
+```{r}
+ggplot(merged_df_abundance, aes(x = Rank, y = Mean_Relative_Abundance)) +
+  geom_line() +
+  geom_point() +
+  labs(
+    title = "Rank-Abundance Curve",
+    x = "Rank",
+    y = "Relative Abundance"
+  ) +
+  theme_minimal()
+```
+
+**What does this distribution tell us?**
+
+We can also do this with species prevalence: In what proportion of samples is a species found
+
+```{r}
+# Number of samples in which each species is detected
+prevalence <- apply(
+  X = otu_table(phyloseq.dogs),
+  MARGIN = ifelse(taxa_are_rows(phyloseq.dogs), 1, 2),
+  FUN = function(x) sum(x > 0)
+)
+
+# Convert counts to the proportion of samples in which each species is detected
+prevalence_prop <- prevalence / nsamples(phyloseq.dogs)
+
+# Convert to a data frame
+prevalence_df <- data.frame(
+  species = names(prevalence),
+  Prevalence_n = prevalence,
+  Prevalence_prop = prevalence_prop,
+  Prevalence_percent = prevalence_prop * 100,
+  row.names = NULL
+)
+
+merged_df_prevalence <- merge(
+  prevalence_df,
+  tax_df,
+  by.x = "species",
+  by.y = "row.names",
+  all.x = TRUE
+)
+
+# Rank from most to least prevalent
+merged_df_prevalence <- merged_df_prevalence[
+  order(-merged_df_prevalence$Prevalence_prop),
+]
+
+merged_df_prevalence$Prevalence_Rank <- seq_len(
+  nrow(merged_df_prevalence)
+)
+```
+
+**Compare the distribution of species with prevalence. Are there species that are abundant and not prevalent or vice-versa?**
+
 # Optional Section 9. 1: Statistical Analyses for Beta-Diversity
 
 Our focus so far has been on visualization and qualitative observations. How do we actually statistically test differences in microbiome composition between groups?
