@@ -219,13 +219,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a><span class="co"># 2) We will be using a R markdown file to write our code</span></span>
-<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a><span class="co"># It allows us organize our code by keeping sections in different "chunks"</span></span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a><span class="co"># 2) We will be using a R markdown file to write our code</span></span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a><span class="co"># It allows us organize our code by keeping sections in different "chunks"</span></span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a><span class="co"># You can create a new chunk by clicking "Insert a new code chunk" in the top bar (button with a green C with a plus)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a><span class="co"># You can create a new chunk by clicking "Insert a new code chunk" in the top bar (button with a green C with a plus)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># R Concepts - Part 2</span></span>
@@ -403,6 +402,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p><strong>how many puppy samples are there?</strong></p>
 <p><strong>Try subsetting the phyloseq object on a different metadata category</strong></p>
 <p><strong>Confirm this worked by checking the metadata file from the phyloseq object</strong></p>
+<p><strong>Optional: The subset_taxa function can be used to select certain taxa in a phyloseq object</strong></p>
+<ul>
+<li>Play around with this and confirm it works</li>
+</ul>
+<p><strong>Optional: The tax_glom function aggregates phyloseq object at a specific rank - what does it do? Can you use it transform your phyloseq in a specific way? how?</strong></p>
 </section>
 <section id="section-3-visualization-of-microbiome-data-using-bar-plots" class="level1">
 <h1>Section 3: Visualization of Microbiome Data using Bar Plots</h1>
@@ -1013,9 +1017,9 @@ Number of permutations: 999
 
 adonis2(formula = bray.distance.puppies.birthstudy ~ puppies_mode_of_delivery, data = meta.birth)
          Df SumOfSqs      R2      F Pr(&gt;F)    
-Model     1  0.49286 0.31173 6.7939  0.001 ***
-Residual 15  1.08818 0.68827                  
-Total    16  1.58104 1.00000                  
+Model     1  0.49193 0.31086 6.7661  0.001 ***
+Residual 15  1.09056 0.68914                  
+Total    16  1.58249 1.00000                  
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 </div>

@@ -30,7 +30,6 @@ You can answer questions as comments in the R chunks
 
 
 
-
 # 2) We will be using a R markdown file to write our code
 
 # It allows us organize our code by keeping sections in different "chunks"
@@ -271,6 +270,12 @@ phyloseq.dogs.puppies <- subset_samples(phyloseq.dogs, host_life_stage == "puppy
 **Try subsetting the phyloseq object on a different metadata category**
 
 **Confirm this worked by checking the metadata file from the phyloseq object**
+
+**Optional: The subset_taxa function can be used to select certain taxa in a phyloseq object**
+
+-   Play around with this and confirm it works
+
+**Optional: The tax_glom function aggregates phyloseq object at a specific rank - what does it do? Can you use it transform your phyloseq in a specific way? how?**
 
 # Section 3: Visualization of Microbiome Data using Bar Plots
 
